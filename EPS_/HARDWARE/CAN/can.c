@@ -81,7 +81,7 @@ u8 CAN_Mode_Init(u8 tsjw,u8 tbs2,u8 tbs1,u16 brp,u8 mode)
   
   	NVIC_InitStructure.NVIC_IRQChannel = USB_LP_CAN1_RX0_IRQn;
   	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;     // 主优先级为1
-  	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;            // 次优先级为0
+  	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;            // 次优先级为0
   	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   	NVIC_Init(&NVIC_InitStructure);
 #endif
@@ -89,15 +89,23 @@ u8 CAN_Mode_Init(u8 tsjw,u8 tbs2,u8 tbs1,u16 brp,u8 mode)
 }   
  
 #if CAN_RX0_INT_ENABLE	//使能RX0中断
+u16 eps_steer_angle=0;
 //中断服务函数			    
 void USB_LP_CAN1_RX0_IRQHandler(void)
 {
-	
-//  	CanRxMsg RxMessage;
-//	int i=0;
-//    CAN_Receive(CAN1, 0, &RxMessage);
-//	for(i=0;i<8;i++)
-//	 printf("rxbuf[%d]:%d\r\n",i,RxMessage.Data[i]);
+  	CanRxMsg RxMessage;
+	CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
+	//printf("ID=%x  %x  %x\r\n",RxMessage.StdId,RxMessage.Data[3],RxMessage.Data[4]);
+	switch(RxMessage.StdId)
+	{
+		case 0x180://angle sensor
+			eps_steer_angle = (u16)(RxMessage.Data[3]);
+		//printf("%x  %x\r\n",RxMessage.Data[3],RxMessage.Data[4]);
+			break;
+		default:
+			break;	
+	}
+	CAN_FIFORelease(CAN1,CAN_FIFO0); 
 }
 #endif
 
