@@ -85,14 +85,15 @@ void EXTI0_IRQHandler(void)
  
 
 //外部中断3服务程序
+u16 aa=20;
 void EXTI3_IRQHandler(void)
 {
 	delay_ms(10);//消抖
 	if(KEY1==0)	 //按键KEY1
 	{				 
 		LED1=!LED1;
-		TIM3->CCR1 = 525+5;
-		TIM3->CCR2 = 484-5;
+		TIM3->CCR1 = 525+aa;
+		TIM3->CCR2 = 484-aa;
 		while(KEY1==0);	 //按键KEY1
 		
 		TIM3->CCR1 = 499;
@@ -107,8 +108,8 @@ void EXTI4_IRQHandler(void)
 	if(KEY0==0)	 //按键KEY0
 	{
 		LED0=!LED0;
-		TIM3->CCR2 = 525+5;
-		TIM3->CCR1 = 484-5;
+		TIM3->CCR2 = 525+aa;
+		TIM3->CCR1 = 484-aa;
 		 while(KEY0==0);
 		TIM3->CCR1 = 499;
 		TIM3->CCR2 = 499;

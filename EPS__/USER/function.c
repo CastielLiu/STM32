@@ -24,9 +24,23 @@ float fun_mod(float x,float y)
 	return x-floor(x/y)*y;
 }
 
-
-
 int fun_round(float x)
 {
 	return x>0?floor(x+0.5):ceil(x-0.5);
+}
+
+void steer_control(float torque)
+{
+	u16 ccr = 499;
+	float duty_cyc = 0.5;
+	
+	if(torque>8)torque = 8.0;
+	else if(torque<-8) torque =-8.0;
+	duty_cyc = (4.6875 * torque +50.0)/100;  // duty_cyc
+	ccr = duty_cyc*1000-1;
+	TIM3->CCR1 = ccr;
+	TIM3->CCR2 = 998-ccr;
+	
+	printf("ccr = %d\r\n",ccr);
+	
 }

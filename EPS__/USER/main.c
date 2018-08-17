@@ -7,6 +7,8 @@
 #include "beep.h"
 #include "timer.h"
 #include "can.h"
+#include "pid.h"
+#include "function.h"
 
 //TIM5_CH1 捕获 PA0  （AS 3号引脚）  高精度小范围角度引脚
 //TIM5_CH2 捕获 PA1	 （RS 6号引脚）  低精度大范围角度引脚
@@ -18,7 +20,12 @@
 	extern float ch1_duty_cycle  ,ch2_duty_cycle ; 
 	extern u16 eps_can_angle;
 	extern u8 usart2_angle_buf[4];
+	 float request_angle=0.0;
 	float eps_pwm_angle=0.0;
+	 float angle_err=0.0;
+	 pid_t_ steer_pid;
+	 PID_init(&steer_pid);
+	 
 	delay_init();	    	 //延时函数初始化	  
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2); //设置NVIC中断分组2:2位抢占优先级，2位响应优先级
 	uart_init(115200);	 //串口初始化为115200
@@ -37,7 +44,12 @@
 	LED0=0;					//先点亮红灯
 	while(1)
 	{	    	
-		delay_ms(500);	 
-		printf("request angle =%f \r\n",*(u16*)&usart2_angle_buf[2]*0.1);		
+		delay_ms(20);	 
+		request_angle = *(u16*)&usart2_angle_buf[2]*0.1;
+		eps_pwm_angle = cal_angle(ch1_duty_cycle,ch2_duty_cycle);
+		//angle_err = request_angle- eps_pwm_angle;
+		
+		steer_control(PID1_realize(&steer_pid,request_angle,eps_pwm_angle));
+		printf("request=%.1f\tcurrent=%.1f\r\n",request_angle,eps_pwm_angle);
 	}	 
 }
