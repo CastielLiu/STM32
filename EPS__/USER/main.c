@@ -14,6 +14,11 @@
 //TIM5_CH2 捕获 PA1	 （RS 6号引脚）  低精度大范围角度引脚
 //TIM3_CH1 PWM  PA6  （TS 4号引脚）  模拟扭矩信号
 //TIM3_CH2 PWM  PA7  （TS 5号引脚）  模拟扭矩信号
+
+//按键功能
+//key0 逆时针旋转
+//key1 顺时针旋转
+//key2 转角校零  ->  key2持续按下15s,不要松开，点火信号下电3s，松开key2,点火信号上电，校零完成
 	
  int main(void)
  {		
@@ -38,7 +43,6 @@
 	TIM3_PWM_Init(999,36-1); // 每计数一次0.5us  //模拟扭矩pwm信号
 	TIM3->CCR1 = 499;
 	TIM3->CCR2 = 499;
-
 	CAN_Mode_Init(CAN_SJW_1tq,CAN_BS2_8tq,CAN_BS1_9tq,4,CAN_Mode_Normal);
 	
 	LED0=0;					//先点亮红灯
@@ -49,7 +53,9 @@
 		eps_pwm_angle = cal_angle(ch1_duty_cycle,ch2_duty_cycle);
 		//angle_err = request_angle- eps_pwm_angle;
 		
-		steer_control(PID1_realize(&steer_pid,request_angle,eps_pwm_angle));
-		printf("request=%.1f\tcurrent=%.1f\r\n",request_angle,eps_pwm_angle);
+		//steer_control(PID1_realize(&steer_pid,request_angle,eps_pwm_angle));
+		
+		printf("request=%.1f\tcurrent=%.1f\teps_can_angle = %.1f\r\n",request_angle,eps_pwm_angle,eps_can_angle*0.1-780);
+		
 	}	 
 }

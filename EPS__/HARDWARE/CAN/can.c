@@ -99,7 +99,8 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
 	switch(RxMessage.StdId)
 	{
 		case 0x180://angle sensor
-			eps_can_angle = (u16)(RxMessage.Data[3]);
+			//eps_can_angle = *(u16*)(&RxMessage.Data[3]);
+			eps_can_angle = RxMessage.Data[3]*256+RxMessage.Data[4];
 		//printf("%x  %x\r\n",RxMessage.Data[3],RxMessage.Data[4]);
 			break;
 		default:

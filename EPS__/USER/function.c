@@ -34,8 +34,8 @@ void steer_control(float torque)
 	u16 ccr = 499;
 	float duty_cyc = 0.5;
 	
-	if(torque>8)torque = 8.0;
-	else if(torque<-8) torque =-8.0;
+	if(torque>8)torque = 5.0;
+	else if(torque<-8) torque =-5.0;
 	duty_cyc = (4.6875 * torque +50.0)/100;  // duty_cyc
 	ccr = duty_cyc*1000-1;
 	TIM3->CCR1 = ccr;
