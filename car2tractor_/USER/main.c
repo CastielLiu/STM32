@@ -1,6 +1,6 @@
 #include "main.h"
 
-//KEY_UP  					PA0 记录目标点
+//KEY_UP  					   PA0 记录目标点
 //KEY0  						PE4 
 //KEY1  						PE3 开始、取消无人驾驶
 
@@ -13,12 +13,10 @@
 
 //TIM5 用于计时  					TIM5
 
-
 //spi      PB12 PB13 PB14 PB15
 //24L01    PG6 PG7 PG8
 //LCD     PB0 PD0 PD1 PD4 PD5 PD8 PD9 PD10 PD14 PD15 
 //				PE7-15 PG0 PG12
-
 
 //预装载值寄存器     TIMx->ARR  
 //比较寄存器         TIMx->CCR2 
@@ -56,9 +54,10 @@ int main(void)
 	float current_angle = 0;
 	float  angle_sensor_voltage;
 	
-	float  mid_voltage= 1.5; //转向中点电压值 标定
-	float  angle_increment = 360.0/5.0; //传感器每变化 1V 角度增量
-	extern u16  send_steer_angle;   //原始角度扩大90倍  15字节为方向，0左，1右
+	float  mid_voltage= 1.6; //转向中点电压值 标定
+	float  angle_increment = 360.0/3.3; //传感器每变化 1V 角度增量
+	
+	extern u16  send_steer_angle;   //原始角度扩大90倍  15位为方向，0左，1右
 	
 	float expect_angle =0.0 , angle_differ = 0.0;
 	u8 num_use_to_for_cycle =0;
@@ -85,8 +84,6 @@ int main(void)
 	u8 switch_lastpoint_flag=1;
 
 	LED0 = 0;
-	STEER_ENABLE = 1;
-	STEER_DIR = 1;
 	system_init();
 ///////////////////////////  遥控器相关	
 #if(YKMode==1)
@@ -185,7 +182,7 @@ int main(void)
 				target_point_seq ++;
 				if(target_point_seq >actual_path_vertwx_num-1)
 					 target_point_seq =0;
-				continue ;
+				continue ;  //务必continue  因为需要重新计算以下代码所需参数
 			}
 			
 			
@@ -194,7 +191,8 @@ int main(void)
 			
 			if(point2point_dis(gps_sphere_now,gps_sphere_target)<Dis_Threshold )
 			{
-				segment_seq++;
+				segment_seq++;//切换目标点
+				continue;
 			}
 			
 			
@@ -210,7 +208,7 @@ int main(void)
 			if(yaw_err >0.01 || yaw_err <-0.01)//防止除零错误以及数据溢出
 			{
 				turning_radius = -0.5 *rectangular.distance /sin(yaw_err); //根据汽车模型计算转弯半径与前轮转角的关系
-				//turning_radius *=100;//to cm
+				//turning_radius *=100;//to cm 
 			
 
 				

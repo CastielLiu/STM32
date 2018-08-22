@@ -27,20 +27,20 @@ void steer_control(float  angle_differ)
 	
 	 if(angle_differ < -0.5)
 	 {
-			STEER_DIR = 1;
+		STEER_DIR = 1;
 		 STEER_ENABLE =1;
 	 }
 	 else if(angle_differ > 0.5)
 	 {
-			STEER_DIR =0;
+		STEER_DIR =0;
 		 STEER_ENABLE =1;
 	 }
 	 else
 		 STEER_ENABLE = 0;
 	 
-	PWM_rate = fabs(angle_differ) *400 + 0;
+	PWM_rate = fabs(angle_differ) *400 + 0; //根据角度差得出期望输出频率（期望速度）
 	 
-	period_ARR = 72000000/PWM_rate/18 - 1;
+	period_ARR = 1000000/PWM_rate -1;
 	TIM3->ARR =period_ARR;
 	TIM_SetCompare2(TIM3,period_ARR/2); 
 }
