@@ -103,21 +103,21 @@ int main(void)
 #endif
 	
 	POINT_COLOR=BLACK;//设置字体为黑色
-	LCD_ShowString(30,20 ,6*8 ,16,16,"mode :");
-	LCD_ShowString(30,46 ,176,16,16,"A    :             Lon");
-	LCD_ShowString(30,62 ,176,16,16,"                   Lat");
-	LCD_ShowString(30,78 ,176,16,16,"B    :             Lon");
-	LCD_ShowString(30,94 ,176,16,16,"                   Lat");
-	LCD_ShowString(30,110,176,16,16,"C    :             Lon");
-	LCD_ShowString(30,126,176,16,16,"                   Lat");
-	LCD_ShowString(30,142,176,16,16,"D    :             Lon");
-	LCD_ShowString(30,158,176,16,16,"                   Lat");
-	LCD_ShowString(30,190,48 ,16,16,"angle:");
-	LCD_ShowString(30,206,48 ,16,16,"speed:");
-	LCD_ShowString(30,222,15*8,16,16,"target status :");
-	LCD_ShowString(30,238,15*8,16,16,"segment status:");
-	LCD_ShowString(30,254,11*8,16,16,"curret yaw:");
-	LCD_ShowString(30,254+16,11*8,16,16,"expect yaw:");
+	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*0 ,6*LCD_FOND_SIZE/2 ,LCD_FOND_SIZE,LCD_FOND_SIZE,"mode :");
+	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*1 ,22*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"A    :             Lon");
+	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*2 ,22*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"                   Lat");
+	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*3 ,22*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"B    :             Lon");
+	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*4 ,22*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"                   Lat");
+	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*5 ,22*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"C    :             Lon");
+	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*6 ,22*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"                   Lat");
+	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*7 ,22*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"D    :             Lon");
+	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*8 ,22*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"                   Lat");
+	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*9 ,6*LCD_FOND_SIZE/2 ,LCD_FOND_SIZE,LCD_FOND_SIZE,"angle:");
+	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*10,6*LCD_FOND_SIZE/2 ,LCD_FOND_SIZE,LCD_FOND_SIZE,"speed:");
+	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*11,15*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"target status :");
+	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*12,15*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"segment status:");
+	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*13,11*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"curret yaw:");
+	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*14,11*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"expect yaw:");
 #ifdef DEBUG
 	strcpy(mode_name,"debug");
 #endif
@@ -250,17 +250,21 @@ int main(void)
 //显示				
 		POINT_COLOR=RED;//设置字体为红色 
 		sprintf(show_angle,"%d",TIM3->CCR2);
-		LCD_ShowString(78,20,96,16,16,mode_name);	
+		LCD_ShowString(LCD_LU_X+6*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*0,12*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,mode_name);	
 		//printf("%s\r\n",mode_name);
-		LCD_ShowString(78,190,50,16,16,show_angle);
+		LCD_ShowString(LCD_LU_X+6*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*9,6*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_angle);
 		sprintf(show_speed,"%.2f",car_speed);
-		LCD_ShowString(78,206,50,16,16,show_speed);
+		LCD_ShowString(LCD_LU_X+6*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*10,6*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_speed);
 		sprintf(show_target_status,"%03d/%03d",target_point_seq+1,actual_path_vertwx_num);
-		LCD_ShowString(30+15*8,222,50,16,16,show_target_status);
+		LCD_ShowString(LCD_LU_X+15*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*11,6*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_target_status);
 		sprintf(show_segment_status,"%3d/%3d",segment_seq,segment_num);
-		LCD_ShowString(30+15*8,238,56,16,16,show_segment_status);
+		LCD_ShowString(LCD_LU_X+11*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*12,7*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_segment_status);
 		sprintf(show_current_yaw,"%3.1f",gps_sphere_now.yaw*180/3.1415926);
-		LCD_ShowString(30+11*8,254,5*8,16,16,show_current_yaw);
+		LCD_ShowString(LCD_LU_X+11*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*13,5*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_current_yaw);
+		
+		LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*0 ,6*LCD_FOND_SIZE/2 ,LCD_FOND_SIZE,LCD_FOND_SIZE,"mode :");
+	
+	
 		
 		delay_ms(50);
 //	//	num = TIM2 ->CNT;

@@ -99,8 +99,9 @@ void EXTI0_IRQHandler(void)
 				target_point[point_seq_] = gps_sphere_now;
 				sprintf(show_lon,"%03.7f",target_point[point_seq_].lon*180/3.1415926);
 				sprintf(show_lat,"%03.7f",target_point[point_seq_].lat*180/3.1415926);
-				LCD_ShowString(30+48,46+(point_seq_)*32,88,16,16,show_lon);
-				LCD_ShowString(30+48,62+(point_seq_)*32,88,16,16,show_lat);
+			
+				LCD_ShowString(LCD_LU_X+6*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*1+(point_seq_)*LCD_FOND_SIZE*2,11*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_lon);
+				LCD_ShowString(LCD_LU_X+6*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*2+(point_seq_)*LCD_FOND_SIZE*2,11*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_lat);
 			
 				point_seq_++;	
 			printf("%f\t%f\tdis=%f\r\n",gps_sphere_now.lon*180/3.1415926,gps_sphere_now.lat*180/3.1415926,dis);

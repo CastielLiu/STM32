@@ -3,6 +3,12 @@
 #include "sys.h"	 
 #include "stdlib.h"
 #include "sys.h"
+
+#define LCD_FOND_SIZE  24
+#define LCD_LU_X  30  //lcd显示屏左上角x起始坐标
+#define LCD_LU_Y  30  //lcd显示屏左上角x起始坐标
+
+
 //////////////////////////////////////////////////////////////////////////////////	 
 //本程序只供学习使用，未经作者许可，不得用于其它任何用途
 //ALIENTEK 战舰STM32F103开发板V3
