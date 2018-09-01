@@ -222,14 +222,12 @@ int main(void)
 			yaw_err = rectangular.yaw - gps_sphere_now.yaw; //当前航向和期望航向的偏差
 			
 			sprintf(show_expect_yaw,"%3.1f",rectangular.yaw*180/3.1415926);
-			LCD_ShowString(30+11*8,254+16,5*8,16,16,show_expect_yaw);
+			LCD_ShowString(LCD_LU_X+11*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*14,5*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_expect_yaw);
 			
 			if(yaw_err >0.01 || yaw_err <-0.01)//防止除零错误以及数据溢出
 			{
 				turning_radius = -0.5 *rectangular.distance /sin(yaw_err); //根据汽车模型计算转弯半径与前轮转角的关系
 				//turning_radius *=100;//to cm 
-			
-
 				
 //不同汽车模型修改以下代码				
 				expect_angle = asin(AXIS_DIS/turning_radius) *180/pi;
@@ -249,7 +247,7 @@ int main(void)
 		
 //显示				
 		POINT_COLOR=RED;//设置字体为红色 
-		sprintf(show_angle,"%d",TIM3->CCR2);
+		sprintf(show_angle,"%.1f",Left_wheel_angle);
 		LCD_ShowString(LCD_LU_X+6*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*0,12*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,mode_name);	
 		//printf("%s\r\n",mode_name);
 		LCD_ShowString(LCD_LU_X+6*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*9,6*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_angle);
