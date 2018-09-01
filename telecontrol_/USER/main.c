@@ -29,7 +29,7 @@ int main(void)
  	NRF24L01_Init();    		//初始化NRF24L01 
 	LED_Init();
 	
-	delay_ms(1000);
+	delay_ms(100);
 	
 	while(NRF24L01_Check())
 	{
@@ -42,17 +42,17 @@ int main(void)
 			IR_LED_ON();
 
 	}
-	delay_ms(1000);
+	delay_ms(100);
 	NRF24L01_TX_Mode();
 	Bzz_ON();
-	delay_ms(500);
+	delay_ms(300);
 	Bzz_OFF();
 	printf("初始化完成。。。\r\n");
 
 	while (1)
 	{
 			delay_ms(30);
-			ADC_SoftwareStartConvCmd(ADC1,ENABLE);	
+		//	ADC_SoftwareStartConvCmd(ADC1,ENABLE);	 //2018.9.1 commit
 
 			//遥控器电池电压过低3.6V报警
 			if (BATTER_Volt < 2233)
