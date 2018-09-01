@@ -131,7 +131,10 @@ int main(void)
 				carControlMsg = dataConvert(wirelessBuf);
 				//printf("%d\t%d\t%d\t\n",carControlMsg.speed_l,carControlMsg.speed_r,carControlMsg.angle);
 			
-				TIM3->CCR1 = 1460+carControlMsg.speed_l*(1540-1460)/4096;//speed
+				if(carControlMsg.speed_l>2050)	
+					TIM3->CCR1 = 1400+carControlMsg.speed_l*(1600-1400)/4096;//speed
+				else if(carControlMsg.speed_l <2045)
+					TIM3->CCR1 = 1200+carControlMsg.speed_l*(1800-1200)/4096;//speed
 				TIM3->CCR2 = 1000+carControlMsg.angle*(2000-1000)/4096;//angle
 				
 				
