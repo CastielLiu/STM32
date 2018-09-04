@@ -18,7 +18,7 @@ void ADC1_Config(void)
 	GPIO_InitTypeDef  GPIO_InitStructure;
 	ADC_DeInit(ADC1);		//重置ADC配置	
 
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA |RCC_APB2Periph_ADC1	, ENABLE );	  //使能ADC1通道时钟
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA |RCC_APB2Periph_ADC1 |RCC_APB2Periph_AFIO	, ENABLE );	  //使能ADC1通道时钟
  	RCC_ADCCLKConfig(RCC_PCLK2_Div6);   //72M/6=12,ADC最大时间不能超过14M
 	
 	 //PA0/1/2/3/4/5/6/7 作为模拟通道输入引脚                         

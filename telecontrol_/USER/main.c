@@ -7,6 +7,7 @@
 #include "24l01.h" 	 
 #include "spi.h"
 #include "fun.h"
+#include "wdg.h"
 
 #define YK_MODE  1
 
@@ -15,20 +16,21 @@ u8 		TxData_Buf[32];
 int main(void)
 {	 
 	u16 	ADC_data[8];
-	u8 runMode =0 ;//默认非遥控模式
+	u8 runMode =1 ;//默认遥控模式
 	int16_t temp=0;
 	u8 status = 0;		
 	uint16_t i=0 ,count =0;	    
 	delay_init();	    	 //延时函数初始化	  
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//设置中断优先级分组为组2：2位抢占优先级，2位响应优先级
 	uart_init(115200);	 	//串口初始化为115200
-	ADC1_Config();  //initial
-	Initial_DMA_ADC1(&ADC_data[0]);
-  KEY_Init();
-	
- 	NRF24L01_Init();    		//初始化NRF24L01 
 	LED_Init();
+	KEY_Init();
 	
+	NRF24L01_Init();    		//初始化NRF24L01 
+	
+	Initial_DMA_ADC1(&ADC_data[0]);
+	ADC1_Config();  //initial
+ 
 	delay_ms(100);
 	
 	while(NRF24L01_Check())
@@ -42,13 +44,19 @@ int main(void)
 			IR_LED_ON();
 
 	}
-	delay_ms(100);
+	delay_ms(10);
 	NRF24L01_TX_Mode();
+	
 	Bzz_ON();
-	delay_ms(300);
+	delay_ms(100);
 	Bzz_OFF();
-	printf("初始化完成。。。\r\n");
-
+	
+//	printf("初始化完成。。。\r\n");
+	if(runMode)
+		TxData_Buf[31] |=1;
+		
+	IWDG_Init(72,50000);
+	
 	while (1)
 	{
 			delay_ms(30);
@@ -74,7 +82,8 @@ int main(void)
 					TxData_Buf[31] |= runMode;
 					//printf("runMode = %d\t",runMode);
 				}
-				while(MODE_KEY ==0) ;
+				while(MODE_KEY ==0){IWDG_Feed();	delay_ms(30);} ;//当检测到按键时，主循环时间变长，喂狗时间被滞后，将导致复位
+																	//因此在按键松开之前循环喂狗。
 			}
 			
 			if(runMode ==1 )
@@ -101,10 +110,10 @@ int main(void)
 				NRF24L01_TxPacket(TxData_Buf);  //send
 				
 				count ++;
-				if(count%20 ==0 )
+				if(count%10 ==0 )
 					LED1 = !LED1;
 			}
-					
+			IWDG_Feed();//喂狗		
 
 //			for(i=0;i<8;i++)
 //				printf("%d  ",ADC_data[i]);
