@@ -29,6 +29,7 @@
 #define AXIS_DIS  0.7
 #define Dis_Threshold 3   //距离当前目标点小于Dis_Threshold时，切换到下一个目标点
 #define DIS_STEP 0.2  //20cm per point
+ 
 
 
 extern u8 actual_path_vertwx_num;
@@ -87,6 +88,8 @@ int main(void)
 	int segment_num=0 , segment_seq=1; //起点到末点的分段数，当前所处段数
 	float lat_step,lon_step; //经纬度的步长
 	u8 switch_lastpoint_flag=1;
+	
+	float east_speed, north_speed, down_speed;
 
 	LED0 = 0;
 	system_init();
@@ -124,6 +127,31 @@ int main(void)
 	
   while(1)//25ms
 	{
+		if(gps_data_buf[1]==0x14 && gps_data_buf[2] ==0x64)
+		{
+			gps_sphere_now.yaw = *(float  *)gpsPtr->yaw;
+			memcpy(convert.in,gpsPtr->lon,8);
+			gps_sphere_now.lon = convert.out;
+			memcpy(convert.in,gpsPtr->lat,8);
+			gps_sphere_now.lat = convert.out;
+			
+						
+			//generate send msg
+			send_lon = gps_sphere_now.lon *180/pi *10000000;
+			send_lat = gps_sphere_now.lat *180/pi *10000000;
+			send_yaw = gps_sphere_now.yaw *180/pi *100;
+			
+			send_gps_status = ((gpsPtr->a[2])<<4 )>>5 ; //a[2]的 4,5 6字节表示定位状态
+			send_satellites = 10;  
+			
+			east_speed =  *(float *)gpsPtr->vel_e;
+			north_speed = *(float *)gpsPtr->vel_n;
+			down_speed = *(float *)gpsPtr->down_velocity;
+			send_speed = sqrt(east_speed*east_speed+north_speed*north_speed+down_speed*down_speed)*3.6*100;//km/h  放大100倍
+		
+		}
+		
+		
 		for(num_use_to_for_cycle=0,Left_front_wheel_Adc_sum=0,Right_front_wheel_Adc_sum =0;
 			num_use_to_for_cycle<ADC_AVERAGE_CNT ; num_use_to_for_cycle++)
 		{
@@ -144,7 +172,7 @@ int main(void)
 		//printf("%d\r\n\r\n",Adc_value);
 		//printf("L=%f\tR=%f\r\n",Left_wheel_angle,Right_wheel_angle);
 		
-		printf("L_angle_sensor_voltage=%f\tR_angle_sensor_voltage=%f\r\n",Left_sensor_voltage,Right_sensor_voltage);
+		//printf("L_angle_sensor_voltage=%f\tR_angle_sensor_voltage=%f\r\n",Left_sensor_voltage,Right_sensor_voltage);
 		
 		send_steer_angle = abs(Left_wheel_angle) * 90; //扩大90倍
 		//printf("angle_sensor_voltage=%f\tcurrent_angle=%f\tsend_steer_angle=%d\r\n",angle_sensor_voltage,current_angle,send_steer_angle);

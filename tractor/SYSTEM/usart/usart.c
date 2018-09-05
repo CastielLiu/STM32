@@ -6,7 +6,9 @@
 #include "can.h"
 #include "dma.h"
 #include "beep.h"
-////////////////////////////////////////////////////////////////////////////////// 	 
+/////////////////////
+#include "delay.h"
+///////////////////////////////////////////////////////////// 	 
 //如果使用ucos,则包括下面的头文件即可.
 #if SYSTEM_SUPPORT_OS
 #include "includes.h"					//ucos 使用	  
@@ -172,8 +174,8 @@ void uart3_init(u32 bound){
 
   //Usart1 NVIC 配置
   NVIC_InitStructure.NVIC_IRQChannel = USART3_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=2 ;//抢占优先级3
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;		//子优先级3
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0 ;//抢占优先级3
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;		//子优先级3
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQ通道使能
 	NVIC_Init(&NVIC_InitStructure);	//根据指定的参数初始化VIC寄存器
   
@@ -188,71 +190,22 @@ void uart3_init(u32 bound){
 
   USART_Init(USART3, &USART_InitStructure); 
   USART_ITConfig(USART3, USART_IT_IDLE, ENABLE); //空闲中断
+  
+  USART_DMACmd(USART3,USART_DMAReq_Rx,ENABLE); //使能串口3的DMA接收
+	
   USART_Cmd(USART3, ENABLE);                 
 
 }
 
-//extern gps_sphere_t gps_sphere_now;
-
-
-int send_lon,send_lat,send_height;
-u16 send_speed,send_yaw;
-u8 send_gps_status,send_satellites;   //use to can send msg 
-
-	
-extern u8 gps_data_buf[105];
-extern gps_data_t *gpsPtr ;
-
-extern gps_sphere_t gps_sphere_now;
-
-union CON
-{
-	u8 in[8];
-	double out;
-}convert;
-
 void USART3_IRQHandler(void)   
 {
 	u32 temp;
-	float east_speed, north_speed, down_speed;
 
 	if(USART_GetITStatus(USART3, USART_IT_IDLE) != RESET)
 	{
 		temp = USART3->SR;
 		temp = USART3->DR; //清除中断标志
-		
-		if(gps_data_buf[1]==0x14 && gps_data_buf[2] ==0x64)
-		{
-			memcpy(convert.in,gpsPtr->lat,8);
-			if(convert.out>0.0&&convert.out<pi/2)
-				gps_sphere_now.lat = convert.out ;
-			
-			memcpy(convert.in,gpsPtr->lon,8);
-			if(convert.out>0.0&&convert.out<pi)
-				gps_sphere_now.lon = convert.out ;
-			if(*(float *)gpsPtr->yaw >0.0 && *(float *)gpsPtr->yaw <2*pi)
-				gps_sphere_now.yaw = *(float *)gpsPtr->yaw ;
-			BEEP=0;
-			//printf("%f\t%f\t%f\r\n",gps_sphere_now.lat,gps_sphere_now.lon,gps_sphere_now.yaw);
-			memset(gps_data_buf,105,0);
-			
-			//generate send msg
-			send_lon = gps_sphere_now.lon *180/pi *10000000;
-			send_lat = gps_sphere_now.lat *180/pi *10000000;
-			send_yaw = gps_sphere_now.yaw *180/pi *100;
-			
-			send_gps_status = ((gpsPtr->a[2])<<4 )>>5 ; //a[2]的 4,5 6字节表示定位状态
-			send_satellites = 10;  
-			
-			east_speed =  *(float *)gpsPtr->vel_e;
-			north_speed = *(float *)gpsPtr->vel_n;
-			down_speed = *(float *)gpsPtr->down_velocity;
-			send_speed = sqrt(east_speed*east_speed+north_speed*north_speed+down_speed*down_speed)*3.6*100;//km/h  放大100倍
-		}
-		else
-		{
-			BEEP = 1;
-		}
+
 		MYDMA_Enable( DMA1_Channel3); //开启传输
 	}
 }

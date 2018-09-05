@@ -31,6 +31,10 @@ u8 gps_data_buf[105];
 
 gps_data_t *gpsPtr = (gps_data_t *)&(gps_data_buf[1]);
 
+int send_lon,send_lat,send_height;
+u16 send_speed,send_yaw;
+u8 send_gps_status,send_satellites;   //use to can send msg 
+
 void system_init()
 {
 	delay_init();	    	   
@@ -39,8 +43,7 @@ void system_init()
 	CAN_Mode_Init(CAN_SJW_1tq,CAN_BS2_8tq,CAN_BS1_9tq,8,CAN_Mode_Normal); //250kbps
 	
 	uart1_init(115200);	
-	//uart2_init(115200); 
-	uart3_init(115200); 
+	 
 	Adc_Init();
  	LED_Init();
 	BEEP_Init();
@@ -53,14 +56,20 @@ void system_init()
 	TIM5_Init(10000,72-1);	// 10ms溢出 用于计时 
 	
 	MYDMA_Config(DMA1_Channel3,(u32)&USART3->DR,(u32)gps_data_buf,105);  //DMA通道、 起止地址以及传输数据量设置
-	USART_DMACmd(USART3,USART_DMAReq_Rx,ENABLE); //使能串口3的DMA接收
+
 	MYDMA_Enable(DMA1_Channel3);//开始一次DMA传输 目的是接收完成后触发空闲中断
 								//然后再空闲中断中再次开启传输
+	uart3_init(115200);
 	
 	ADC_DMA_Config(); //ADC DMA传输配置
 	
 	LCD_Init();
 	printf("初始化完成...\r\n");
 }
+union CON
+{
+	u8 in[8];
+	double out;
+}convert;
 
 #endif 
