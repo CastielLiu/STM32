@@ -2,18 +2,8 @@
 #include "usart.h"
 #include "can.h"
 #include "delay.h"
-//////////////////////////////////////////////////////////////////////////////////	 
-//本程序只供学习使用，未经作者许可，不得用于其它任何用途
-//ALIENTEK 精英 STM32开发板
-//PWM  驱动代码			   
-//正点原子@ALIENTEK
-//技术论坛:www.openedv.com
-//修改日期:2010/12/03
-//版本：V1.0
-//版权所有，盗版必究。
-//Copyright(C) 正点原子 2009-2019
-//All rights reserved
-////////////////////////////////////////////////////////////////////////////////// 	  
+#include "param.h"
+  
 
 //通用定时器中断初始化
 //这里时钟选择为APB1的2倍，而APB1为36M
@@ -165,7 +155,7 @@ void TIM5_Cap_Init(u16 arr,u16 psc)
    
 }
 
-float ch1_duty_cycle =0.0 ,ch2_duty_cycle =0.0; 
+
 u16 ch1_rising_cnt=0 , ch2_rising_cnt = 0; // 捕获到上升沿时的计数
 u16 ch1_falling_cnt =0 ,ch2_falling_cnt = 0;// 捕获到下降沿时的计数
 u8 ch1_capture_mode = 0 ,ch2_capture_mode=0;//上升沿捕获0  下降沿捕获1

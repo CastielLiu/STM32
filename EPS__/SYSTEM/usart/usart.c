@@ -1,5 +1,6 @@
 #include "sys.h"
 #include "usart.h"	  
+#include "param.h"
 ////////////////////////////////////////////////////////////////////////////////// 	 
 //如果使用ucos,则包括下面的头文件即可.
 #if SYSTEM_SUPPORT_OS
@@ -103,7 +104,7 @@ void uart_init(u32 bound){
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;	//复用推挽输出
   GPIO_Init(GPIOA, &GPIO_InitStructure);//初始化GPIOA.9
    
-  //USART1_RX	  GPIOA.10初始化
+  //USART2_RX	  GPIOA.10初始化
 //	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 ;
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_3;//PA10
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;//浮空输入
@@ -144,18 +145,19 @@ void USART1_IRQHandler(void)                	//串口1中断服务程序
 	;	
 } 
 
-u8 usart2_angle_buf[4];
+
 void USART2_IRQHandler(void) 
 {
-	static u8 i=0;
+//	static u8 i=0;
+//	static u8 angle_buf[4];
 	if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET) 
 	{
-		usart2_angle_buf[i]=USART_ReceiveData(USART2);
-		//printf("i=%d\t%0x\r\n",i,usart2_angle_buf[i]);
-		if(i>0 && usart2_angle_buf[i]==0xff && usart2_angle_buf[i-1]==0xff)
-			i=1;
-		i++;
-		if(i>3) i=0;
+//		angle_buf[i]=USART_ReceiveData(USART2);
+//		//printf("i=%d\t%0x\r\n",i,usart2_angle_buf[i]);
+//		if(i>0 && angle_buf[i]==0xff && angle_buf[i-1]==0xff)
+//			i=1;
+//		i++;
+//		if(i>3) i=0;
 		
 		USART_ClearITPendingBit(USART2,USART_IT_RXNE);
 	}

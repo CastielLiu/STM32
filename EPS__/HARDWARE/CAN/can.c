@@ -1,6 +1,7 @@
 #include "can.h"
 #include "delay.h"
 #include "usart.h"
+#include "param.h"
 //////////////////////////////////////////////////////////////////////////////////	 
 //本程序只供学习使用，未经作者许可，不得用于其它任何用途
 //ALIENTEK精英STM32开发板
@@ -89,7 +90,7 @@ u8 CAN_Mode_Init(u8 tsjw,u8 tbs2,u8 tbs1,u16 brp,u8 mode)
 }   
  
 #if CAN_RX0_INT_ENABLE	//使能RX0中断
-u16 eps_can_angle=0;
+
 //中断服务函数			    
 void USB_LP_CAN1_RX0_IRQHandler(void)
 {
@@ -100,7 +101,7 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
 	{
 		case 0x180://angle sensor
 			//eps_can_angle = *(u16*)(&RxMessage.Data[3]);
-			eps_can_angle = RxMessage.Data[3]*256+RxMessage.Data[4];
+			g_eps_can_angle = RxMessage.Data[3]*256+RxMessage.Data[4];
 		//printf("%x  %x\r\n",RxMessage.Data[3],RxMessage.Data[4]);
 			break;
 		default:

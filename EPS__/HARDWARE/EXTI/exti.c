@@ -83,6 +83,8 @@ void EXTI2_IRQHandler(void)
  
 
 //外部中断3服务程序
+#if KEY_CONTROL_DEBUG == 1
+
 u16 aa=20;
 void EXTI3_IRQHandler(void)
 {
@@ -114,3 +116,4 @@ void EXTI4_IRQHandler(void)
 	}	
 	EXTI_ClearITPendingBit(EXTI_Line4);  //清除LINE4上的中断标志位  
 }
+#endif

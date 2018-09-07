@@ -12,7 +12,7 @@ void PID_init(pid_t_ *pid)
 	pid->lastError =0.0;
 	pid->currentError =0.0;
 	pid->SigmaError =0.0;
-	pid->Kp = 0.03;
+	pid->Kp = 0.00;
 	pid->Ki = 0.00;
 	pid->Kd = 0.0;
 }
@@ -43,9 +43,11 @@ float PID2_realize(pid_t_ *pid,float setValue,float currentValue)  //ÔöÁ¿PID
 	pid->actualValue = currentValue;
 	pid->setValue = setValue;
 	pid->currentError = pid->setValue - pid->actualValue;
+	
 	pid->controlValue +=  pid->Kp *(pid->currentError -pid->lastError)
-											+ pid->Ki * pid->currentError
-											+ pid->Kd * (pid->currentError - 2*pid->lastError +pid->lastLastError);
+						+ pid->Ki * pid->currentError
+						+ pid->Kd * (pid->currentError - 2*pid->lastError +pid->lastLastError);
+	
 	pid->lastError = pid->currentError;
 	pid->lastLastError = pid->lastError;
 	

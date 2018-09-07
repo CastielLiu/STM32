@@ -1,4 +1,5 @@
 #include "function.h"
+#include "param.h"
 
 float cal_angle(float duty_cycle1,float duty_cycle2)
 {
@@ -34,13 +35,25 @@ void steer_control(float torque)
 	u16 ccr = 499;
 	float duty_cyc = 0.5;
 	
-	if(torque>8)torque = 5.0;
-	else if(torque<-8) torque =-5.0;
-	duty_cyc = (4.6875 * torque +50.0)/100;  // duty_cyc
+	if(torque>8)torque = g_maxTorque;
+	else if(torque<-8) torque = -g_maxTorque;
+	
+	duty_cyc = (4.6875 * torque +50.0)/100;  //根据比例曲线计算占空比
 	ccr = duty_cyc*1000-1;
 	TIM3->CCR1 = ccr;
 	TIM3->CCR2 = 998-ccr;
 	
-	printf("ccr = %d\r\n",ccr);
+	//printf("ccr = %d\r\n",ccr);
+}
+
+void speed_control(float set_speed)
+{
+	u16 dac_val;
+	float voltage = set_speed/8;  //假定0-5V对应0-40km/h
 	
+	if (voltage>3.3) voltage = 3.3;
+	
+	dac_val = voltage/3.3 * 4096;
+	
+	DAC->DHR12R1 = dac_val;  //12位右对齐通道1寄存器
 }

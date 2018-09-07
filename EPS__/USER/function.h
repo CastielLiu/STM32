@@ -9,5 +9,6 @@ float cal_angle(float duty_cycle1,float duty_cycle2);
 int fun_round(float x);
 
 void steer_control(float torque);
+void speed_control(float set_speed);
 
 #endif

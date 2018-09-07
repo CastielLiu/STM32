@@ -1,7 +1,10 @@
-//TIM5_CH1 捕获 PA0  （AS 3号引脚）  高精度小范围角度引脚
-//TIM5_CH2 捕获 PA1	 （RS 6号引脚）  低精度大范围角度引脚
-//TIM3_CH1 PWM  PA6  （TS 4号引脚）  模拟扭矩信号
-//TIM3_CH2 PWM  PA7  （TS 5号引脚）  模拟扭矩信号
+//TIM5_CH1 捕获          PA0  （AS 3号引脚）  高精度小范围角度引脚
+//TIM5_CH2 捕获  	    PA1	 （RS 6号引脚）  低精度大范围角度引脚
+//TIM3_CH1 PWM 	    PA6  （TS 4号引脚）  模拟扭矩信号
+//TIM3_CH2 PWM  	    PA7  （TS 5号引脚）  模拟扭矩信号
+//DAC   CH1 模拟输出   PA4     车辆速度信号
+//串口2接收上位机控制消息  0xff 0xff XX XX
+
 
 //按键功能
 //key0 逆时针旋转
