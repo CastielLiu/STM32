@@ -29,7 +29,7 @@ int main(void)
 	NRF24L01_Init();    		//初始化NRF24L01 
 	
 	Initial_DMA_ADC1(&ADC_data[0]);
-	ADC1_Config();  //initial
+	ADC1_Config();  //initial    先初始化DMA 并开启DMA传输，再初始化ADC和开启软件转换
  
 	delay_ms(100);
 	
