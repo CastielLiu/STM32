@@ -16,6 +16,8 @@
 //TIM5_CH2 捕获 PA1	 （RS 6号引脚）  低精度大范围角度引脚
 //TIM3_CH1 PWM  PA6  （TS 4号引脚）  模拟扭矩信号
 //TIM3_CH2 PWM  PA7  （TS 5号引脚）  模拟扭矩信号
+//DAC  CH1 AIN	PA4   车辆速度信号，首先假定模拟量与速度正相关，再利用pid调节
+//DAC__CH2 AIN  PA5	  制动模拟信号，
 
 //按键功能
 //key0 逆时针旋转
@@ -52,7 +54,7 @@
 	TIM3->CCR1 = 499;
 	TIM3->CCR2 = 499;
 	CAN_Mode_Init(CAN_SJW_1tq,CAN_BS2_8tq,CAN_BS1_9tq,4,CAN_Mode_Normal);
-	Dac1_Init(); //模拟信号输出，控制电机转速
+	Dac1_Init(); //模拟信号输出，控制电机转速,以及制动电机速度
 
 	
 	LED0=0;					//先点亮红灯
@@ -60,6 +62,7 @@
 	{	    	
 		delay_ms(20);	 
 		speed_control(8.0);
+		brake_control(2.8);
 		//eps_pwm_angle = cal_angle(ch1_duty_cycle,ch2_duty_cycle);
 		//angle_err = request_angle- eps_pwm_angle;
 		

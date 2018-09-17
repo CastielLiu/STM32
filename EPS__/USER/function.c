@@ -1,6 +1,8 @@
 #include "function.h"
 #include "param.h"
 
+//通过pwm捕获转角传感器信号占空比计算转角。
+//目前使用Can总线读取转角信号，2018.9.1
 float cal_angle(float duty_cycle1,float duty_cycle2)
 {
 	float A_AS = 4.8*(duty_cycle1-12.5);
@@ -30,22 +32,27 @@ int fun_round(float x)
 	return x>0?floor(x+0.5):ceil(x-0.5);
 }
 
+//转向控制
+//模拟转矩信号，两路pwm输出
 void steer_control(float torque)
 {
 	u16 ccr = 499;
 	float duty_cyc = 0.5;
 	
-	if(torque>8)torque = g_maxTorque;
-	else if(torque<-8) torque = -g_maxTorque;
+	if(torque>g_maxTorque)torque = g_maxTorque;
+	else if(torque<-g_maxTorque) torque = -g_maxTorque;
 	
 	duty_cyc = (4.6875 * torque +50.0)/100;  //根据比例曲线计算占空比
 	ccr = duty_cyc*1000-1;
-	TIM3->CCR1 = ccr;
+	TIM3->CCR1 = ccr; 
 	TIM3->CCR2 = 998-ccr;
 	
 	//printf("ccr = %d\r\n",ccr);
 }
 
+//速度控制，模拟信号0-3.3v 
+//stm32只能输出0-3.3v模拟信号。电机驱动器控制信号为0-5v
+//如需更大速度，可使用电压放大器。
 void speed_control(float set_speed)
 {
 	u16 dac_val;
@@ -56,4 +63,17 @@ void speed_control(float set_speed)
 	dac_val = voltage/3.3 * 4096;
 	
 	DAC->DHR12R1 = dac_val;  //12位右对齐通道1寄存器
+}
+
+//制动控制，需要正反两个方向。
+void brake_control(float set_brake_voltage)
+{
+	u16 dac_val=0;
+	float voltage = fabs(set_brake_voltage);
+	
+	if (voltage>3.3) voltage = 3.3;
+	
+	dac_val = voltage/3.3 * 4096;
+	
+	DAC->DHR12R2 = dac_val;  //12位右对齐通道2寄存器
 }

@@ -10,5 +10,6 @@ int fun_round(float x);
 
 void steer_control(float torque);
 void speed_control(float set_speed);
+void brake_control(float set_brake_voltage);
 
 #endif
