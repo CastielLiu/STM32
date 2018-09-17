@@ -1,7 +1,7 @@
 #ifndef __TIMER_H
 #define __TIMER_H
 #include "sys.h"
-void TIM2_Init(u16 arr,u16 psc);
-void TIM5_Init(u16 arr,u16 psc);
+void TIM6_Init(u16 arr,u16 psc);
+void TIM7_Init(u16 arr,u16 psc);
 
 #endif

@@ -17,9 +17,10 @@
 
 //TIM3_CH1 PWM  PA6  （TS 4号引脚）  模拟扭矩信号
 //TIM3_CH2 PWM  PA7  （TS 5号引脚）  模拟扭矩信号
-//TIM2     计时   		10ms溢出一次
-//TIM5     计时			定时溢出，计算速度，单独使用计时器5用于脉冲计数
-//TIM4_CNT 计数 PE0
+//TIM6     计时   		10ms溢出一次 定时发送消息等，对时间精度要求不高
+//TIM7     计时			定时溢出，仅用于计算轮速传感器脉冲，时间精度要求高。
+//TIM4_CNT 计数 PE0   接轮速编码器
+//TIM2_CNT 计数 PA15  接轮速编码器
 //KEY_UP 		PA0
 //KEY0-2 		PE4, PE3, PE2
 //DAC  CH1 AIN	PA4   车辆速度信号，首先假定模拟量与速度正相关，再利用pid调节
@@ -63,8 +64,8 @@
 	speedControl_Init();
 	brakeControl_Init();
 	
-	TIM2_Init(9999,72-1);//10ms溢出 			 //定时器中断发送消息
-	TIM5_Init(30000-1,720-1);//300ms溢出
+	TIM6_Init(9999,72-1);//10ms溢出 			 //定时器中断发送消息
+	TIM7_Init(30000-1,720-1);//300ms溢出
 	
 	
 	LED0=0;					//点亮红灯
@@ -73,9 +74,6 @@
 		delay_ms(20);	 
 		speed_control(8.0);
 		brake_control(2.8);
-	//	printf("%d\r\n",TIM4->CNT);
-		//eps_pwm_angle = cal_angle(ch1_duty_cycle,ch2_duty_cycle);
-		//angle_err = request_angle- eps_pwm_angle;
 		
 		//steer_control(PID1_realize(&steer_pid,request_angle,eps_pwm_angle));
 		
