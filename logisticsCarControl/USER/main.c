@@ -13,6 +13,7 @@
 #include "steerControl.h"
 #include "brakeControl.h"
 #include "param.h"
+#include "lcd.h"
 
 
 //TIM3_CH1 PWM  PA6  （TS 4号引脚）  模拟扭矩信号
@@ -67,17 +68,14 @@
 	TIM6_Init(9999,72-1);//10ms溢出 			 //定时器中断发送消息
 	TIM7_Init(30000-1,720-1);//300ms溢出
 	
-	
+	LCD_Init();
+	LCD_showName();
 	LED0=0;					//点亮红灯
 	while(1)
 	{	    	
 		delay_ms(20);	 
 		speed_control(8.0);
 		brake_control(2.8);
-		
 		//steer_control(PID1_realize(&steer_pid,request_angle,eps_pwm_angle));
-		
-	
-		
 	}	 
 }
