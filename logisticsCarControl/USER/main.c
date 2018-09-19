@@ -14,6 +14,7 @@
 #include "brakeControl.h"
 #include "param.h"
 #include "lcd.h"
+#include "pstwo.h"
 
 
 //TIM3_CH1 PWM  PA6  （TS 4号引脚）  模拟扭矩信号
@@ -28,6 +29,15 @@
 //DAC__CH2 AIN  PA5	  制动模拟信号，
 //IO       		PF0   前进0  后退1
 //IO			PF1   制动1  取消制动0
+/*--遥控器引脚--------*/
+//DAT数据线		PB12
+//CMD命令线	 	PB13
+//CS 片选线		PB14
+//CLK时钟线  	PB15
+/*--上述4个引脚可以作为spi2通信引脚--*/
+
+//LCD     PB0 PD0 PD1 PD4 PD5 PD8 PD9 PD10 PD14 PD15 
+//				PE7-15 PG0 PG12
 
 //按键功能
 //key0 逆时针旋转
@@ -36,6 +46,7 @@
 	
  int main(void)
  {		
+	extern u8 Data[9] ;//遥控器数据数组
 	float angle_err=0.0;
 	 
 	pid_t_ steer_pid,speed_pid;
@@ -49,7 +60,8 @@
 	speed_pid.Kp =g_speedPid_Kp ;
 	speed_pid.Ki =g_speedPid_Ki ;
 	speed_pid.Kd =g_speedPid_Kd ;
-	 
+
+/*---------------系统初始化----------------------------*/	 
 	delay_init();	    	 //延时函数初始化	  
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2); //设置NVIC中断分组2:2位抢占优先级，2位响应优先级
 	uart_init(115200);	 //串口初始化为115200
@@ -58,8 +70,9 @@
 	EXTIX_Init();         	//初始化外部中断输入 
 	CAN_Mode_Init(CAN_SJW_1tq,CAN_BS2_8tq,CAN_BS1_9tq,4,CAN_Mode_Normal);
 	
-	speedDetect_Init(65535);	
+	PS2_Init();				//遥控相关引脚初始化
 	
+	speedDetect_Init(65535);	
 	
 	steerControl_Init(999,36-1);//2kHZ
 	speedControl_Init();
@@ -72,10 +85,45 @@
 	LCD_showName();
 	LED0=0;					//点亮红灯
 	while(1)
-	{	    	
-		delay_ms(20);	 
-		speed_control(8.0);
-		brake_control(2.8);
-		//steer_control(PID1_realize(&steer_pid,request_angle,eps_pwm_angle));
-	}	 
+	{
+		if(DriveringMode == TELECONTROL_MODE)//遥控模式
+		{
+			if( !PS2_RedLight()) //判断手柄是否为红灯模式，是,遥控有效
+			{
+				delay_ms(30);//延时很重要，刚请求过数据，需要延时后请求下次数据
+				PS2_RequestData();	 //手柄按键捕获处理
+				if(PS2_L2 ==0) //左侧2按下
+					g_teleSafetyCnt = 0 ;//g_teleSafetyCnt参数50ms自加1次
+				if(g_teleSafetyCnt > 10)//500ms内没有检测到左侧2按键按下，说明遥控器信号丢失，紧急制动
+				{
+					speed_control(0);
+					brake_control(3.3);//全速制动
+					g_teleSafetyCnt =20;//将g_teleSafetyCnt设置为大于10的数字，
+										//防止其自加溢出后小于10而执行下面的代码
+					continue;
+				}
+				//检测档位按键
+				if(PS2_RECTANGLE==0) g_teleControlMaxSpeed = TELECONTROL_LOW_SPEED;
+				else if(PS2_TRIANGLE==0)  g_teleControlMaxSpeed = TELECONTROL_MIDDLE_SPEED;
+				else if(PS2_CIRCLE ==0) g_teleControlMaxSpeed = TELECONTROL_HIGH_SPEED;
+				speed_control(PS2_GenerateSpeed(Data));
+				
+			}
+			else//遥控模式，但遥控无效
+			{
+				speed_control(0);//速度置0
+				brake_control(3.3);//全速制动
+			}
+		}
+		else if(DriveringMode == DRIVERLESS_MODE) //无人驾驶模式
+		{
+			delay_ms(20);	 
+			//speed_control(8.0);
+			//brake_control(2.8);
+			//steer_control(PID1_realize(&steer_pid,request_angle,g_eps_can_angle));
+			
+		}	
+		
+	}
+	return 0;	
 }

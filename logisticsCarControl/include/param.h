@@ -7,6 +7,10 @@
 #define WHEEL_RADIUS    0.2   //车轮半径 m
 #define MATH_PI 3.1415926535
 
+//遥控模式下的三种档位，高，中，低
+#define TELECONTROL_HIGH_SPEED   15.0 //遥控模式下的最大速度
+#define TELECONTROL_MIDDLE_SPEED 10.0
+#define TELECONTROL_LOW_SPEED 	 5.0
 
 
 extern float g_speedPid_Kp  ;
@@ -27,5 +31,24 @@ extern float g_requestSpeed , g_actualSpeed;
 extern float g_maxTorque;
 
 extern float g_vehicleSpeed ;
+extern float g_teleControlMaxSpeed;
+extern u8 g_teleSafetyCnt;
 
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

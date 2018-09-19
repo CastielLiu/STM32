@@ -85,6 +85,8 @@ void TIM6_IRQHandler(void)   //TIM2中断
 		//	car_speed
 			Can_Send_Msg(0x318,car_speed,8);//车速ID 20ms
 		}
+		if(cnt%5==0)
+			g_teleSafetyCnt++;//50ms g_teleSafetyCnt自加
 		cnt++;
 		TIM_ClearITPendingBit(TIM6, TIM_IT_Update);  //清除TIMx的中断待处理位:TIM 中断源 
 	}
@@ -101,3 +103,5 @@ void TIM7_IRQHandler(void)   //TIM2中断
 		TIM_ClearITPendingBit(TIM7, TIM_IT_Update);  //清除TIMx的中断待处理位:TIM 中断源 
 	}
 }
+
+

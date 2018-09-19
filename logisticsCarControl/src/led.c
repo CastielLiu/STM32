@@ -31,5 +31,11 @@ void LED_Init(void)
  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;	    		 //LED1-->PE.5 端口配置, 推挽输出
  GPIO_Init(GPIOE, &GPIO_InitStructure);	  				 //推挽输出 ，IO口速度为50MHz
  GPIO_SetBits(GPIOE,GPIO_Pin_5); 						 //PE.5 输出高 
+	
+//模式选择线，无人驾驶和遥控驾驶 //PB9可用
+ GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;	  
+ GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD; 		 //下拉输入
+ GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ GPIO_Init(GPIOB, &GPIO_InitStructure);	  							
 }
  

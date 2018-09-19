@@ -51,3 +51,5 @@ void speedDetect_Init(u16 arr)
 	
 	TIM4->CR1 |= 0x00000001;//使能计数器
 }
+
+

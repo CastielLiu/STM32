@@ -20,3 +20,9 @@ float g_maxTorque = 5.0;//5.0Nm   可设置的最大扭矩为8Nm！！
 
 float g_vehicleSpeed =0.0;
 
+float g_teleControlMaxSpeed= TELECONTROL_LOW_SPEED;//遥控模式下的默认最大速度为低速
+
+u8 g_teleSafetyCnt = 0;//遥控器安全计数器，防止因遥控器信号丢失发生意外。
+
+
+
