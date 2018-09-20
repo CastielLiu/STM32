@@ -1,6 +1,8 @@
 #include "pstwo.h"
 #include "usart.h"
 #include "param.h"
+#include "speedControl.h"
+#include "brakeControl.h"
 /*********************************************************
 Copyright (C), 2015-2025, ZYRobot.
 湖南智宇科教设备有限公司
@@ -158,9 +160,40 @@ bit0 ---------------bit7
 */
 }
 
-float PS2_GenerateSpeed(u8 *data)
+//利用摇杆反向拨动实现刹车
+//考虑刹车使车辆静止后摇杆依然处于拨动状态，不能使车辆反方向行驶
+//释放摇杆后，才可释放刹车！！
+void PS2_SpeedControl(u8 *data)
 {
-	return g_teleControlMaxSpeed *(data[6]-127)/127;
+	static u8 PS2_brake_flag =0;
+	u8 speedBuf = data[8];
+	printf("%d\r\n",speedBuf);
+	if(g_vehicleSpeed_LF !=0 || g_vehicleSpeed_RF !=0 )//当前速度不为0
+	{	
+		if(SPEED_DIRICTION == FRONT_DIR &&  speedBuf>130 )//正在前进但手柄后拨，表明希望制动
+		{
+			speed_control(0); 
+			brake_control(3.3*(speedBuf-127)/127);
+			PS2_brake_flag = 1;//制动标志位置1
+		}
+		else if(SPEED_DIRICTION == BACK_DIR && speedBuf <125)//正在后退但手柄前拨，表明希望制动
+		{
+			speed_control(0); 
+			brake_control(3.3*(speedBuf-127)/127);
+			PS2_brake_flag = 1;//制动标志位置1
+		}
+	}
+
+	if(speedBuf<129 && speedBuf >126)//速度摇杆中位
+	{
+		PS2_brake_flag = 0;  
+	}
+	
+	if(PS2_brake_flag ==0)
+	{
+		brake_control(-3.3);//释放刹车
+		speed_control(g_teleControlMaxSpeed *(127 - speedBuf)/127);
+	}
 }
 
 

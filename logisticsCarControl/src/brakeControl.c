@@ -16,7 +16,7 @@ void brakeControl_Init(void)
    	RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, ENABLE );	  //使能DAC通道时钟 
 	
 	GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_1;				 // 端口配置
- 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //模拟输入
+ 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		
  	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
  	GPIO_Init(GPIOF, &GPIO_InitStructure);
 	BRAKE_STATUS = BRAKE_DISABLE;
@@ -42,14 +42,19 @@ void brakeControl_Init(void)
 //暂无推杆属性，无法确定如何控制 2018.9.10
 void brake_control(float set_brake_voltage)
 {
+	u16 dac_val;
 	
-	u16 dac_val=0;
-
-	float voltage = fabs(set_brake_voltage);
+	if(set_brake_voltage<0)
+	{
+		BRAKE_STATUS = BRAKE_DISABLE;
+		set_brake_voltage = -set_brake_voltage;
+	}
+	else
+		BRAKE_STATUS = BRAKE_ENABLE;
 	
-	if (voltage>3.3) voltage = 3.3;
+	if (set_brake_voltage>3.3) set_brake_voltage = 3.3;
 	
-	dac_val = voltage/3.3 * 4096;
+	dac_val = set_brake_voltage/3.3 * 4096;
 	
 	DAC->DHR12R2 = dac_val;  //12位右对齐通道2寄存器
 }

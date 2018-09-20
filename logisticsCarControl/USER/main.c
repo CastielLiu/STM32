@@ -29,6 +29,7 @@
 //DAC__CH2 AIN  PA5	  制动模拟信号，
 //IO       		PF0   前进0  后退1
 //IO			PF1   制动1  取消制动0
+//IO			PB8	  模式(遥控驾驶和无人驾驶)选择线，默认下拉
 /*--遥控器引脚--------*/
 //DAT数据线		PB12
 //CMD命令线	 	PB13
@@ -90,27 +91,30 @@
 		{
 			if( !PS2_RedLight()) //判断手柄是否为红灯模式，是,遥控有效
 			{
-				delay_ms(30);//延时很重要，刚请求过数据，需要延时后请求下次数据
+				delay_ms(50);//延时很重要，刚请求过数据，需要延时后请求下次数据
 				PS2_RequestData();	 //手柄按键捕获处理
-				if(PS2_L2 ==0) //左侧2按下
+				//printf("%x,%x,%x,%x,%x,%x,%x,%x\r\n",Data[1],Data[2],Data[3],Data[4],Data[5],Data[6],Data[7],Data[8]);
+				if(0 ==PS2_L2) //左侧2按下
 					g_teleSafetyCnt = 0 ;//g_teleSafetyCnt参数50ms自加1次
-				if(g_teleSafetyCnt > 10)//500ms内没有检测到左侧2按键按下，说明遥控器信号丢失，紧急制动
+				if(g_teleSafetyCnt > 20)//500ms内没有检测到左侧2按键按下，说明遥控器信号丢失，紧急制动
 				{
 					speed_control(0);
 					brake_control(3.3);//全速制动
-					g_teleSafetyCnt =20;//将g_teleSafetyCnt设置为大于10的数字，
-										//防止其自加溢出后小于10而执行下面的代码
+					g_teleSafetyCnt =30;//将g_teleSafetyCnt设置为大于设定值的数字，
+										//防止其自加溢出后小于设定值而执行下面的代码
+					printf("遥控信号丢失\r\n"); //debug
 					continue;
 				}
 				//检测档位按键
 				if(PS2_RECTANGLE==0) g_teleControlMaxSpeed = TELECONTROL_LOW_SPEED;
 				else if(PS2_TRIANGLE==0)  g_teleControlMaxSpeed = TELECONTROL_MIDDLE_SPEED;
 				else if(PS2_CIRCLE ==0) g_teleControlMaxSpeed = TELECONTROL_HIGH_SPEED;
-				speed_control(PS2_GenerateSpeed(Data));
+				PS2_SpeedControl(Data);
 				
 			}
 			else//遥控模式，但遥控无效
 			{
+				delay_ms(50);
 				speed_control(0);//速度置0
 				brake_control(3.3);//全速制动
 			}
@@ -122,7 +126,8 @@
 			//brake_control(2.8);
 			//steer_control(PID1_realize(&steer_pid,request_angle,g_eps_can_angle));
 			
-		}	
+		}
+		printf("DAC1=%d,DAC2=%d,speedDir=%d,brakeDir=%d\r\n",DAC->DHR12R1,DAC->DHR12R2,SPEED_DIRICTION,BRAKE_STATUS);
 		
 	}
 	return 0;	

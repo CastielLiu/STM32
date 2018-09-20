@@ -51,14 +51,14 @@ Description: PS2驱动程序
 #define PSS_LX 7
 #define PSS_LY 8
 
-#define PS2_L2	      ((Data[4]>>0)&0xff)
-#define PS2_R2 		  ((Data[4]>>1)&0xff)
-#define PS2_L1 		  ((Data[4]>>2)&0xff)
-#define PS2_R1		  ((Data[4]>>3)&0xff)
-#define PS2_TRIANGLE  ((Data[4]>>4)&0xff)
-#define PS2_CIRCLE 	  ((Data[4]>>5)&0xff)
-#define PS2_STOP 	  ((Data[4]>>6)&0xff)
-#define PS2_RECTANGLE ((Data[4]>>7)&0xff)
+#define PS2_L2	      ((Data[4])&0x01)
+#define PS2_R2 		  ((Data[4]>>1)&0x01)
+#define PS2_L1 		  ((Data[4]>>2)&0x01)
+#define PS2_R1		  ((Data[4]>>3)&0x01)
+#define PS2_TRIANGLE  ((Data[4]>>4)&0x01)
+#define PS2_CIRCLE 	  ((Data[4]>>5)&0x01)
+#define PS2_STOP 	  ((Data[4]>>6)&0x01)
+#define PS2_RECTANGLE ((Data[4]>>7)&0x01)
 
 /*
 0	Idle  
@@ -84,7 +84,7 @@ u8 PS2_DataKey(void);		  //键值读取
 u8 PS2_AnologData(u8 button); //得到一个摇杆的模拟量
 void PS2_ClearData(void);	  //清除数据缓冲区
 void PS2_RequestData(void);
-float PS2_GenerateSpeed(u8 *data);
+void PS2_SpeedControl(u8 *data);
 
 #endif
 

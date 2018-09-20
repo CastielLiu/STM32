@@ -96,8 +96,9 @@ void TIM7_IRQHandler(void)   //TIM2中断
 {
 	if (TIM_GetITStatus(TIM7, TIM_IT_Update) != RESET) 
 	{
-		g_vehicleSpeed = TIM4->CNT * MATH_PI * 2* WHEEL_RADIUS /(0.05 * ENCODER_LINE_CNT);
-		printf("speed = %f\t%d\t %d\r\n",g_vehicleSpeed,TIM4->CNT,TIM2->CNT);
+		g_vehicleSpeed_LF = TIM4->CNT * MATH_PI * 2* WHEEL_RADIUS /(0.05 * ENCODER_LINE_CNT);
+		g_vehicleSpeed_RF = TIM2->CNT * MATH_PI * 2* WHEEL_RADIUS /(0.05 * ENCODER_LINE_CNT);
+		printf("speed = %f\t%d\t %d\r\n",g_vehicleSpeed_LF,TIM4->CNT,TIM2->CNT);
 		TIM4 ->CNT = 0;
 		TIM2 ->CNT = 0;
 		TIM_ClearITPendingBit(TIM7, TIM_IT_Update);  //清除TIMx的中断待处理位:TIM 中断源 

@@ -30,7 +30,8 @@ extern float g_requestSpeed , g_actualSpeed;
 
 extern float g_maxTorque;
 
-extern float g_vehicleSpeed ;
+extern float g_vehicleSpeed_LF ;
+extern float g_vehicleSpeed_RF ;
 extern float g_teleControlMaxSpeed;
 extern u8 g_teleSafetyCnt;
 

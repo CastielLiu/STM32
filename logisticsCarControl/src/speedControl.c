@@ -13,7 +13,7 @@ void speedControl_Init(void)
    	RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, ENABLE );	  //使能DAC通道时钟 
 
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 ;				 // 端口配置
- 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //模拟输入
+ 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 	
  	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
  	GPIO_Init(GPIOF, &GPIO_InitStructure);
 	SPEED_DIRICTION = FRONT_DIR;	//初始化为前进挡
@@ -41,7 +41,17 @@ void speedControl_Init(void)
 void speed_control(float set_speed)
 {
 	u16 dac_val;
-	float voltage = set_speed/8;  //假定0-5V对应0-40km/h
+	float voltage;
+	
+	if(set_speed<0)
+	{
+		SPEED_DIRICTION = BACK_DIR;
+		set_speed = -set_speed;
+	}
+	else
+		SPEED_DIRICTION = FRONT_DIR;
+	
+	voltage = set_speed/8;  //假定0-5V对应0-40km/h
 	
 	if (voltage>3.3) voltage = 3.3;
 	
