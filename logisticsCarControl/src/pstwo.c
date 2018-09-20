@@ -167,7 +167,7 @@ void PS2_SpeedControl(u8 *data)
 {
 	static u8 PS2_brake_flag =0;
 	u8 speedBuf = data[8];
-	printf("%d\r\n",speedBuf);
+	//printf("%d\r\n",speedBuf);
 	if(g_vehicleSpeed_LF !=0 || g_vehicleSpeed_RF !=0 )//当前速度不为0
 	{	
 		if(SPEED_DIRICTION == FRONT_DIR &&  speedBuf>130 )//正在前进但手柄后拨，表明希望制动

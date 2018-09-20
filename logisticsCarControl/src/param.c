@@ -5,13 +5,14 @@ float g_speedPid_Kp = 1.0;
 float g_speedPid_Ki = 0.0;
 float g_speedPid_Kd = 0.0;
 
-float g_steerPid_Kp = 1.0;
+float g_steerPid_Kp = 0.2;
 float g_steerPid_Ki = 0.0;
 float g_steerPid_Kd = 0.0;
 
 float ch1_duty_cycle =0.0 ,ch2_duty_cycle =0.0; 
 
 float g_eps_can_angle=0.0;  
+float g_steer_angle =0.0;
 u8 g_eps_angle_status = EPS_ANGLE_VALID;//ÓÐÐ§
 
 float g_requestAngle , g_actualAngle;

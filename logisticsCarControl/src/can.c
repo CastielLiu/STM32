@@ -107,6 +107,7 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
 			else
 			{
 				g_eps_can_angle = temp_angle_buf*0.1;
+				g_steer_angle = g_eps_can_angle/REDUCTION_RATIO;
 				g_eps_angle_status = EPS_ANGLE_VALID;
 			}
 			break;

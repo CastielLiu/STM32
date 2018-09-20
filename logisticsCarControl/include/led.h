@@ -16,7 +16,7 @@
 #define LED0 PBout(5)// PB5
 #define LED1 PEout(5)// PE5	
 
-#define DriveringMode  PBin(8)
+#define DriveringMode  PBin(9)
 #define TELECONTROL_MODE  0
 #define DRIVERLESS_MODE   1
 
