@@ -94,6 +94,7 @@ u8 CAN_Mode_Init(u8 tsjw,u8 tbs2,u8 tbs1,u16 brp,u8 mode)
 //中断服务函数			    
 void USB_LP_CAN1_RX0_IRQHandler(void)
 {
+	u16 temp_angle_buf;
   	CanRxMsg RxMessage;
 	CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
 	//printf("ID=%x  %x  %x\r\n",RxMessage.StdId,RxMessage.Data[3],RxMessage.Data[4]);
@@ -101,8 +102,13 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
 	{
 		case 0x180://angle sensor
 			//eps_can_angle = *(u16*)(&RxMessage.Data[3]);
-			g_eps_can_angle = RxMessage.Data[3]*256+RxMessage.Data[4];
-		//printf("%x  %x\r\n",RxMessage.Data[3],RxMessage.Data[4]);
+			temp_angle_buf = RxMessage.Data[3]*256+RxMessage.Data[4];
+			if(temp_angle_buf == 0xffff)g_eps_angle_status = EPS_ANGLE_INVALID;
+			else
+			{
+				g_eps_can_angle = temp_angle_buf*0.1;
+				g_eps_angle_status = EPS_ANGLE_VALID;
+			}
 			break;
 		default:
 			break;	

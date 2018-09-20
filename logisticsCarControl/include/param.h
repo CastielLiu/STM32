@@ -12,6 +12,9 @@
 #define TELECONTROL_MIDDLE_SPEED 10.0
 #define TELECONTROL_LOW_SPEED 	 5.0
 
+#define EPS_ANGLE_VALID 1
+#define EPS_ANGLE_INVALID 0
+
 
 extern float g_speedPid_Kp  ;
 extern float g_speedPid_Ki  ;
@@ -23,7 +26,8 @@ extern float g_steerPid_Kd  ;
 
 extern float ch1_duty_cycle  ,ch2_duty_cycle ; 
 
-extern u16 g_eps_can_angle;
+extern float g_eps_can_angle;
+extern u8 g_eps_angle_status;
 
 extern float g_requestAngle , g_actualAngle;
 extern float g_requestSpeed , g_actualSpeed;
@@ -34,6 +38,7 @@ extern float g_vehicleSpeed_LF ;
 extern float g_vehicleSpeed_RF ;
 extern float g_teleControlMaxSpeed;
 extern u8 g_teleSafetyCnt;
+
 
 #endif
 

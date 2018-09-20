@@ -96,13 +96,13 @@
 				//printf("%x,%x,%x,%x,%x,%x,%x,%x\r\n",Data[1],Data[2],Data[3],Data[4],Data[5],Data[6],Data[7],Data[8]);
 				if(0 ==PS2_L2) //左侧2按下
 					g_teleSafetyCnt = 0 ;//g_teleSafetyCnt参数50ms自加1次
-				if(g_teleSafetyCnt > 20)//500ms内没有检测到左侧2按键按下，说明遥控器信号丢失，紧急制动
+				if(g_teleSafetyCnt > 15)//15*50ms内没有检测到左侧2按键按下，说明遥控器信号丢失，紧急制动
 				{
 					speed_control(0);
 					brake_control(3.3);//全速制动
 					g_teleSafetyCnt =30;//将g_teleSafetyCnt设置为大于设定值的数字，
 										//防止其自加溢出后小于设定值而执行下面的代码
-					printf("遥控信号丢失\r\n"); //debug
+					//printf("遥控信号丢失\r\n"); //debug
 					continue;
 				}
 				//检测档位按键

@@ -11,7 +11,8 @@ float g_steerPid_Kd = 0.0;
 
 float ch1_duty_cycle =0.0 ,ch2_duty_cycle =0.0; 
 
-u16 g_eps_can_angle=0;  //true_angle = g_eps_can_angle *0.1
+float g_eps_can_angle=0.0;  
+u8 g_eps_angle_status = EPS_ANGLE_VALID;//ÓÐÐ§
 
 float g_requestAngle , g_actualAngle;
 float g_requestSpeed , g_actualSpeed;
