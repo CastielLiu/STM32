@@ -69,16 +69,16 @@ void EXTIX_Init(void)
   	NVIC_Init(&NVIC_InitStructure);  	  //根据NVIC_InitStruct中指定的参数初始化外设NVIC寄存器
  
 }
-extern u8 car_speed[];
+
 void EXTI2_IRQHandler(void)
 {
-	car_speed[5]= 0x03; car_speed[6] = 0xe8;//speed = 100
+	g_car_speed[5]= 0x03; g_car_speed[6] = 0xe8;//speed = 100
 	delay_ms(10);//消抖
 	while(KEY2==0)	 //按键KEY0
 	{
 		;
 	}	
-	car_speed[5]= 0x00; car_speed[6] = 0x00;
+	g_car_speed[5]= 0x00; g_car_speed[6] = 0x00;
 	EXTI_ClearITPendingBit(EXTI_Line2);  //清除LINE4上的中断标志位  
 }
  

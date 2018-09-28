@@ -9,8 +9,6 @@
 #define WHEEL_RADIUS    0.2   //车轮半径 m
 #define REDUCTION_RATIO  20  //前轮转动1°时方向盘转动的角度
 
-
-
 #define MATH_PI 3.1415926535
 
 //遥控模式下的三种档位，高，中，低
@@ -20,6 +18,10 @@
 
 #define EPS_ANGLE_VALID 1
 #define EPS_ANGLE_INVALID 0
+
+#define STEER_ANGLE_ERROR 0x01
+#define SPEED_SENSOR_ERROR 0x02
+
 
 
 extern float g_speedPid_Kp  ;
@@ -32,8 +34,13 @@ extern float g_steerPid_Kd  ;
 
 extern float ch1_duty_cycle  ,ch2_duty_cycle ; 
 
+extern u8 g_car_speed[];
+
+
+
+
 extern float g_eps_can_angle;
-extern float g_steer_angle;
+extern float g_road_wheel_angle;
 extern u8 g_eps_angle_status;
 
 extern float g_requestAngle , g_actualAngle;
@@ -45,6 +52,7 @@ extern float g_vehicleSpeed_LF ;
 extern float g_vehicleSpeed_RF ;
 extern float g_teleControlMaxSpeed;
 extern u8 g_teleSafetyCnt;
+extern u8 g_errorFlag;
 
 
 #endif

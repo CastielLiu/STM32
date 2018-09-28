@@ -186,6 +186,7 @@ void LCD_Display_Dir(u8 dir);								//设置屏幕显示方向
 void LCD_Set_Window(u16 sx,u16 sy,u16 width,u16 height);	//设置窗口				
 
 void LCD_showName(void);
+void LCD_ShowChinese(u16 x,u16 y, u8 size,u8 mode);
 	
 //LCD分辨率设置
 #define SSD_HOR_RESOLUTION		800		//LCD水平分辨率

@@ -15,6 +15,7 @@
 #include "param.h"
 #include "lcd.h"
 #include "pstwo.h"
+#include "rtc.h"
 
 
 //TIM3_CH1 PWM  PA6  （TS 4号引脚）  模拟扭矩信号
@@ -52,6 +53,7 @@
 	
  int main(void)
  {		
+	u32 temp_cnt =0;
 	extern u8 Data[9] ;//遥控器数据数组
 	float angle_err=0.0;
 	 
@@ -88,15 +90,24 @@
 	TIM7_Init(30000-1,720-1);//300ms溢出
 	
 	LCD_Init();
-	LCD_showName();
+	//LCD_showName();
+	LCD_ShowChinese(64,40,32,0);
 	LED0=0;					//点亮红灯
+	
+	/*使用后备区域存储数据  存入BKP->DR*  */
+	RCC->APB1ENR|=1<<28;//使能电源时钟
+    RCC->APB1ENR|=1<<27;//使能备份时钟
+	PWR->CR|=1<<8;    //取消备份区写保护
+	
 	while(1)
 	{
-		if(g_eps_angle_status == EPS_ANGLE_INVALID)//判断方向盘转角传感器数据是否有效送
+		if(g_errorFlag != 0 )//错误
 		{
-			BEEP = 1; delay_ms(300);BEEP =0;delay_ms(300);
+			
+			beepWarnning();
 			continue;
 		}
+		
 		if(DriveringMode == TELECONTROL_MODE)//遥控模式
 		{
 			if( !PS2_RedLight()) //判断手柄是否为红灯模式，是,遥控有效
@@ -108,8 +119,7 @@
 					g_teleSafetyCnt = 0 ;//g_teleSafetyCnt参数50ms自加1次
 				if(g_teleSafetyCnt > 15)//15*50ms内没有检测到左侧2按键按下，说明遥控器信号丢失，紧急制动
 				{
-					speed_control(0);
-					brake_control(3.3);//全速制动
+					emergencyBrake();//全速制动
 					g_teleSafetyCnt =30;//将g_teleSafetyCnt设置为大于设定值的数字，
 										//防止其自加溢出后小于设定值而执行下面的代码
 					//printf("遥控信号丢失\r\n"); //debug
@@ -120,15 +130,14 @@
 				else if(PS2_TRIANGLE==0)  g_teleControlMaxSpeed = TELECONTROL_MIDDLE_SPEED;
 				else if(PS2_CIRCLE ==0) g_teleControlMaxSpeed = TELECONTROL_HIGH_SPEED;
 				PS2_SpeedControl(Data);
-				steer_control(PID1_realize(&steer_pid,60./255.*Data[5]-30.,g_steer_angle));
+				steer_control(PID1_realize(&steer_pid,60./255.*Data[5]-30.,g_road_wheel_angle));
 				//期望转角为60./255.*Data[5],来自遥控器
 				printf("t_angle=%f\r\n",60./256.*Data[5]-30.);
 			}
 			else//遥控模式，但遥控无效
 			{
 				delay_ms(50);
-				speed_control(0);//速度置0
-				brake_control(3.3);//全速制动
+				emergencyBrake();
 			}
 		}
 		else if(DriveringMode == DRIVERLESS_MODE) //无人驾驶模式
@@ -140,7 +149,6 @@
 			
 		}
 		//printf("DAC1=%d,DAC2=%d,speedDir=%d,brakeDir=%d\r\n",DAC->DHR12R1,DAC->DHR12R2,SPEED_DIRICTION,BRAKE_STATUS);
-		
 	}
 	return 0;	
 }

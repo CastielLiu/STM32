@@ -1,5 +1,6 @@
 #include "dac.h"
 #include "math.h"
+#include "speedControl.h"
 #include "brakeControl.h"
 
 
@@ -7,7 +8,6 @@
 //PF1 制动or释放制动
 void brakeControl_Init(void)
 {
-  
 	GPIO_InitTypeDef GPIO_InitStructure;
 	DAC_InitTypeDef DAC_InitType;
 
@@ -54,9 +54,14 @@ void brake_control(float set_brake_voltage)
 	
 	if (set_brake_voltage>3.3) set_brake_voltage = 3.3;
 	
-	dac_val = set_brake_voltage/3.3 * 4096;
+	dac_val = set_brake_voltage/3.3 * 4095;
 	
 	DAC->DHR12R2 = dac_val;  //12位右对齐通道2寄存器
 }
 
+void emergencyBrake(void)
+{
+	speed_control(0.0);
+	brake_control(-3.3);
+}
 

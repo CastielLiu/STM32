@@ -2897,10 +2897,46 @@ void LCD_ShowString(u16 x,u16 y,u16 width,u16 height,u8 size,u8 *p)
     }  
 }
 
-//显示信息名称
+
+void LCD_ShowChinese(u16 x,u16 y,u8 size,u8 mode)
+{  							  
+    u8 temp,t1,t,t2;
+	u16 y0=y;
+	u8 csize=(size/8+((size%8)?1:0))*(size);		//得到字体一个字符对应点阵集所占的字节数	
+	POINT_COLOR=BLACK;
+ 	for(t2=0;t2<10;t2++)
+	{
+		for(t=0;t<csize;t++)
+		{   
+			temp=chinese[t2][t]; 				
+			for(t1=0;t1<8;t1++)
+			{			    
+				if(temp&0x80)LCD_Fast_DrawPoint(x,y,POINT_COLOR);
+				else if(mode==0)LCD_Fast_DrawPoint(x,y,BACK_COLOR);
+				temp<<=1;
+				y++;
+				if(y>=lcddev.height)return;		//超区域了
+				if((y-y0)==size)
+				{
+					y=y0;
+					x++;
+					if(x>=lcddev.width)return;	//超区域了
+					break;
+				}
+			}  	 
+		}  
+	}		
+}   
+
+
+//显示信息名称以及各种不需要更新的显示量
 void LCD_showName()
 {
+	
 	POINT_COLOR=BLACK;//设置字体为黑色
+	
+	
+	
 	//					x坐标			y坐标(0代表第0行)	  长度(个数*字母宽度) 	  高度			字号		内容
 	LCD_ShowString(LCD_LU_X , LCD_LU_Y + LCD_FOND_SIZE*0 , 14*LCD_FOND_SIZE/2 , LCD_FOND_SIZE,LCD_FOND_SIZE,"vehicle speed:");
 	LCD_ShowString(LCD_LU_X , LCD_LU_Y + LCD_FOND_SIZE*1 , 14*LCD_FOND_SIZE/2 , LCD_FOND_SIZE,LCD_FOND_SIZE,"steer  angle :");

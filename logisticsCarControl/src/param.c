@@ -11,8 +11,10 @@ float g_steerPid_Kd = 0.0;
 
 float ch1_duty_cycle =0.0 ,ch2_duty_cycle =0.0; 
 
+u8 g_car_speed[]= {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+
 float g_eps_can_angle=0.0;  
-float g_steer_angle =0.0;
+float g_road_wheel_angle =0.0;
 u8 g_eps_angle_status = EPS_ANGLE_VALID;//ÓĞĞ§
 
 float g_requestAngle , g_actualAngle;
@@ -27,5 +29,6 @@ float g_teleControlMaxSpeed= TELECONTROL_LOW_SPEED;//Ò£¿ØÄ£Ê½ÏÂµÄÄ¬ÈÏ×î´óËÙ¶ÈÎªµ
 
 u8 g_teleSafetyCnt = 0;//Ò£¿ØÆ÷°²È«¼ÆÊıÆ÷£¬·ÀÖ¹ÒòÒ£¿ØÆ÷ĞÅºÅ¶ªÊ§·¢ÉúÒâÍâ¡£
 
+u8 g_errorFlag = 0x00;//0:ÎŞ´íÎó;0Î»:×ªÏò½ÇÒì³£;1Î»:³µËÙÒì³£;
 
 

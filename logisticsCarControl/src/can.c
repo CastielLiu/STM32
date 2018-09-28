@@ -2,18 +2,7 @@
 #include "delay.h"
 #include "usart.h"
 #include "param.h"
-//////////////////////////////////////////////////////////////////////////////////	 
-//本程序只供学习使用，未经作者许可，不得用于其它任何用途
-//ALIENTEK精英STM32开发板
-//CAN驱动 代码	   
-//正点原子@ALIENTEK
-//技术论坛:www.openedv.com
-//修改日期:2012/9/11
-//版本：V1.0
-//版权所有，盗版必究。
-//Copyright(C) 广州市星翼电子科技有限公司 2009-2019
-//All rights reserved									  
-//////////////////////////////////////////////////////////////////////////////////
+
 //CAN初始化
 //tsjw:重新同步跳跃时间单元.范围:CAN_SJW_1tq~ CAN_SJW_4tq
 //tbs2:时间段2的时间单元.   范围:CAN_BS2_1tq~CAN_BS2_8tq;
@@ -103,12 +92,17 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
 		case 0x180://angle sensor
 			//eps_can_angle = *(u16*)(&RxMessage.Data[3]);
 			temp_angle_buf = RxMessage.Data[3]*256+RxMessage.Data[4];
-			if(temp_angle_buf == 0xffff)g_eps_angle_status = EPS_ANGLE_INVALID;
+			if(temp_angle_buf == 0xffff)
+			{
+				g_eps_angle_status = EPS_ANGLE_INVALID;
+				g_errorFlag |= STEER_ANGLE_ERROR;
+			}
 			else
 			{
 				g_eps_can_angle = temp_angle_buf*0.1;
-				g_steer_angle = g_eps_can_angle/REDUCTION_RATIO;
+				g_road_wheel_angle = g_eps_can_angle/REDUCTION_RATIO;
 				g_eps_angle_status = EPS_ANGLE_VALID;
+				g_errorFlag &= ~STEER_ANGLE_ERROR;
 			}
 			break;
 		default:

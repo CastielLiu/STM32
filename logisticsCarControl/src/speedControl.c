@@ -55,7 +55,7 @@ void speed_control(float set_speed)
 	
 	if (voltage>3.3) voltage = 3.3;
 	
-	dac_val = voltage/3.3 * 4096;
+	dac_val = voltage/3.3 * 4095;
 	
 	DAC->DHR12R1 = dac_val;  //12位右对齐通道1寄存器
 }
