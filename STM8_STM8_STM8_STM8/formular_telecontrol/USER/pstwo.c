@@ -19,8 +19,8 @@ u16 MASK[]={
     PSB_R1 ,
     PSB_GREEN,
     PSB_RED,
-    PSB_BLUE,
-    PSB_PINK
+    PSB_BLUE, //15
+    PSB_PINK //16
 	};	
 
 //PB5Êý¾ÝÏß

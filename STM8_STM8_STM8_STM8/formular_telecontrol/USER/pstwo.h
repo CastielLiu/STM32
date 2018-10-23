@@ -26,7 +26,7 @@
 #define PSB_PAD_RIGHT   6
 #define PSB_PAD_DOWN    7
 #define PSB_PAD_LEFT    8
-#define PSB_L2         9
+#define PSB_L2          9
 #define PSB_R2          10
 #define PSB_L1          11
 #define PSB_R1          12
@@ -34,10 +34,11 @@
 #define PSB_RED         14
 #define PSB_BLUE        15
 #define PSB_PINK        16
+
 #define PSB_TRIANGLE    13
 #define PSB_CIRCLE      14
 #define PSB_CROSS       15
-#define PSB_SQUARE      26
+#define PSB_SQUARE      16
 
 extern u8 Data[9];
 extern u16 MASK[16];

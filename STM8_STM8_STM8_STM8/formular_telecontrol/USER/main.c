@@ -20,6 +20,7 @@ int main(void)
 {
   /* Infinite loop */
   u8 i=0;
+  u16 Handkey;
   u8 sendBuf[6]={0x12,0x34,0x56};
   /*设置内部高速时钟16M为主时钟*/ 
   Clk_conf();
@@ -36,16 +37,33 @@ int main(void)
   {
     if( !PS2_RedLight()) 
 	{
-        delay_ms(50);
+        delay_ms(75);
         PS2_RequestData();
         sendBuf[3] = Data[8];
         sendBuf[4] = Data[5];
-        UART2_SendString(sendBuf,5);
+        //UART2_SendString(sendBuf,5);
+        Handkey=(Data[4]<<8)|Data[3];
+        if((Handkey&(1<<(MASK[PSB_SQUARE-1]-1)))==0)
+        { 
+          LED0 = 1;
+          LED1 = 0;
+        }
+        else if((Handkey&(1<<(MASK[PSB_CIRCLE-1]-1)))==0)
+        {
+          LED1 = 1;
+          LED0 = 0;
+        }
+        else if((Handkey&(1<<(MASK[PSB_CROSS-1]-1)))==0)
+        {
+          LED1 = 0;
+          LED0 = 0;
+        }
+        //printf("\r\n");
     }
     else
     {
       //printf("绿灯模式\r\n");
-      delay_ms(50);
+      delay_ms(30);
     }
 
   }

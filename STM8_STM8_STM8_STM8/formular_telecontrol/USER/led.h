@@ -9,12 +9,12 @@
 #define PD2_out  PD_ODR_ODR2  
 #define PD3_out  PD_ODR_ODR3  
 
+#define LED0  PD2_out
+#define LED1  PD3_out
+
 /* LEDº¯Êý¶¨Òå */
 void LED_conf(void);
-void Set_Led_On(void);
-void Set_Led_Off(void);
-void LED_Display(void);
-void LED_Display_Bit();
+
 
 #endif
 
