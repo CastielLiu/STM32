@@ -214,7 +214,7 @@ void USART2_IRQHandler(void)
 	USART_ClearITPendingBit(USART2,USART_IT_RXNE);//清除中断标志位
 } 
 
-void USART3_IRQHandler(void)            
+void USART3_IRQHandler(void)
 {
 	if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET)
 	{
