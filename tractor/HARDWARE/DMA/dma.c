@@ -66,7 +66,8 @@ void ADC_DMA_Config()  //DMA1_CH1 ADC1
 //开启一次DMA传输
 void MYDMA_Enable(DMA_Channel_TypeDef*DMA_CHx)
 { 
-	DMA_Cmd(DMA_CHx, DISABLE );  //关闭USART1 TX DMA1 所指示的通道      
+	DMA_Cmd(DMA_CHx, DISABLE );  //关闭USART1 TX DMA1 所指示的通道   
+	 
  	DMA_SetCurrDataCounter(DMA_CHx,DMA1_MEM_LEN);//DMA通道的DMA缓存的大小
  	DMA_Cmd(DMA_CHx, ENABLE);  //使能USART1 TX DMA1 所指示的通道 
 }	  

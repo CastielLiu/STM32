@@ -58,6 +58,8 @@ int main(void)
 	float angle_range = 70 ;//设置极限转角范围
 	float min_angle = -1.0*angle_range/2 ;
 	float request_angle =0.0;
+	const float MaxDriveSpeedRateLimit = 0.2;
+	const float MaxReverseSpeedRateLimit = 0.6;
 	u8 num_use_to_for_cycle =0;
 #if(YKMode==1)
 	carControlData_t	carControlMsg = {2048,2048,2048}; //初始化车速，转向角为0
@@ -131,14 +133,12 @@ int main(void)
 				carControlMsg = dataConvert(wirelessBuf);
 				//printf("%d\t%d\t%d\t\n",carControlMsg.speed_l,carControlMsg.speed_r,carControlMsg.angle);
 			
+				//speed 0-4096
 				if(carControlMsg.speed_l>2050)	
-					TIM3->CCR1 = 1400+carControlMsg.speed_l*(1600-1400)/4096;//speed
+					TIM3->CCR1 = 1500+(carControlMsg.speed_l-2048)*500*MaxDriveSpeedRateLimit/4096;
 				else if(carControlMsg.speed_l <2045)
-					TIM3->CCR1 = 1200+carControlMsg.speed_l*(1800-1200)/4096;//speed
-				TIM3->CCR2 = 1000+carControlMsg.angle*(2000-1000)/4096;//angle
-				
-				
-				//printf("speed_pwm = %d\r\n",TIM3->CCR1);
+					TIM3->CCR1 = 1500+(carControlMsg.speed_l-2048)*500*MaxReverseSpeedRateLimit/4096;
+				TIM3->CCR2 = 1500+(carControlMsg.angle-2048)*500/4096;//angle
 			}
 #else
 			;
@@ -211,7 +211,7 @@ int main(void)
 			else
 				TIM3->CCR2 =1499;
 #else
-				request_angle = 20.;
+				request_angle = 20.;//debug
 #endif
 			
 			print_count ++;

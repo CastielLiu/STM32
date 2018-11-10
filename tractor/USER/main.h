@@ -58,7 +58,7 @@ void system_init()
 	MYDMA_Config(DMA1_Channel3,(u32)&USART3->DR,(u32)gps_data_buf,105);  //DMA通道、 起止地址以及传输数据量设置
 
 	MYDMA_Enable(DMA1_Channel3);//开始一次DMA传输 目的是接收完成后触发空闲中断
-								//然后再空闲中断中再次开启传输
+								//然后在空闲中断中再次开启传输
 	uart3_init(115200);
 	
 	ADC_DMA_Config(); //ADC DMA传输配置
