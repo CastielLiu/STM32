@@ -83,7 +83,7 @@ void EXTI3_IRQHandler(void)
 		
 		if(g_driveMode == TELECONTROL_MODE)
 		{
-			strcpy(g_driveModeName,"Telecontrol Mode");
+			strcpy(g_driveModeName,"Telecontrol Mode ");
 			USART_Cmd(USART2, DISABLE);
 		}
 		else

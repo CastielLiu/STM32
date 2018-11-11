@@ -225,10 +225,12 @@ static u8 usart2_state=0;
 u8 msgBuf[10]={0};
 void USART2_IRQHandler(void)                 
 {
-	u8 temp, length_of_data,msgID;
+	u8 temp;
+	static u8 length_of_data,msgID;
 	static u8 i=0;
 	if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)
 	{
+		
 		temp = USART_ReceiveData(USART2);
 		switch(usart2_state)
 		{
@@ -252,7 +254,10 @@ void USART2_IRQHandler(void)
 				msgBuf[i] = temp;
 				i++;
 				if(i == length_of_data)
+				{
 					usart2_state = 5;
+					i = 0;
+				}
 				break;
 			case 5:
 				if(data_check(msgBuf,length_of_data) == temp)

@@ -35,6 +35,7 @@ void system_init()
 	
 	//CAN_Mode_Init(CAN_SJW_1tq,CAN_BS2_8tq,CAN_BS1_9tq,4,CAN_Mode_Normal);
 	uart1_init(115200);	
+	uart2_init(115200);	
 	uart3_init(115200); 
  	LED_Init();
 	BEEP_Init();

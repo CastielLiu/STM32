@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>Agricultural_machinery</TargetName>
+      <TargetName>lower_control</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <TargetOption>
@@ -47,7 +47,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>..\OBJ\</OutputDirectory>
-          <OutputName>tractor2_car_</OutputName>
+          <OutputName>lowerControl</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>
@@ -365,7 +365,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_HD,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\HARDWARE\LED;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\STM32F10x_FWLib\inc;..\CORE;..\HARDWARE\KEY;..\HARDWARE\TIMER;..\HARDWARE\ADC;..\HARDWARE\EXTI;..\HARDWARE\DIR;..\HARDWARE\WDG;..\HARDWARE\CAN;..\HARDWARE\gps_com;..\HARDWARE\BEEP;..\HARDWARE\navigation2;..\HARDWARE\LCD;..\HARDWARE\NRF24L01;..\HARDWARE\SPI;..\HARDWARE\WIRELESS_DATA;..\SYSTEM\capture</IncludePath>
+              <IncludePath>..\HARDWARE\LED;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\STM32F10x_FWLib\inc;..\CORE;..\HARDWARE\KEY;..\HARDWARE\TIMER;..\HARDWARE\ADC;..\HARDWARE\EXTI;..\HARDWARE\DIR;..\HARDWARE\WDG;..\HARDWARE\CAN;..\HARDWARE\gps_com;..\HARDWARE\BEEP;..\HARDWARE\navigation2;..\HARDWARE\LCD;..\HARDWARE\NRF24L01;..\HARDWARE\SPI;..\HARDWARE\FUNCTION;..\SYSTEM\capture</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -494,9 +494,9 @@
               <FilePath>..\HARDWARE\SPI\spi.c</FilePath>
             </File>
             <File>
-              <FileName>wireless_data.c</FileName>
+              <FileName>function.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HARDWARE\WIRELESS_DATA\wireless_data.c</FilePath>
+              <FilePath>..\HARDWARE\FUNCTION\function.c</FilePath>
             </File>
           </Files>
         </Group>

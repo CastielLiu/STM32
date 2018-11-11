@@ -20,7 +20,7 @@
 
 
 u8 g_driveMode = TELECONTROL_MODE; //UPPER_CONTROL_MODE
-u8 g_ykSafty_num = 0;
+u8 g_ykSafty_num = 0; 
 char g_driveModeName[20];
 carControlData_t	g_carControlMsg = {2048,2048,2048}; //初始化车速，转向角为0
 
@@ -46,8 +46,8 @@ int main(void)
 
 	
 	POINT_COLOR=BLACK;//设置字体为黑色
-	LCD_ShowString(30,20 ,48 ,16,16,"mode :");
-	strcpy(g_driveModeName,"Telecontrol Mode");
+	LCD_ShowString(30,20 ,12*6 ,24,24,"mode :");
+	strcpy(g_driveModeName,"Telecontrol Mode ");
 
   while(1)//25ms
 	{
@@ -60,14 +60,17 @@ int main(void)
 				g_carControlMsg = dataConvert(wirelessBuf);
 
 			}
-			else
-				continue;
+			else if(g_ykSafty_num >8 )//8*50ms
+			{
+				g_carControlMsg.speed_l = 2048;
+				g_carControlMsg.speed_r = 2048;
+			}
 
 		}
-		else//无人驾驶模式
-		{
-			//串口接收上位机指令并进行解析得到控制消息！g_carControlMsg
-		}
+//		else//无人驾驶模式
+//		{
+//			//串口接收上位机指令并进行解析得到控制消息！g_carControlMsg
+//		}
 		
 		//speed 0-4096
 		if(g_carControlMsg.speed_l>2050)	
@@ -77,8 +80,9 @@ int main(void)
 		TIM3->CCR2 = 1500+(g_carControlMsg.angle-2048)*500/4096;//angle
 					
 		POINT_COLOR=RED;//设置字体为红色 
-		LCD_ShowString(78,20,96,16,16,g_driveModeName);	
+		LCD_ShowString(30+12*6,20,12*18,24,24,g_driveModeName);
+		printf("%d\t%d\t%s\r\n",g_carControlMsg.speed_l,g_carControlMsg.angle,g_driveModeName);
 		
-		delay_ms(10);
+		delay_ms(30);
 	}	 
  }

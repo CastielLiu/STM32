@@ -47,8 +47,6 @@ void TIM5_IRQHandler(void)
 			if(g_driveMode == TELECONTROL_MODE)//遥控模式下
 			{
 				g_ykSafty_num++;
-				if(g_ykSafty_num >8)//50ms*8
-					TIM3->CCR1 = 1499; //speed = 0;
 			}
 		}
     TIM_ClearITPendingBit(TIM5, TIM_IT_Update); //清除中断标志位
