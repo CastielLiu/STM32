@@ -32,15 +32,13 @@
  
 
 
-extern u8 actual_path_vertwx_num;
 
-gps_sphere_t target_point[MAX_PATH_VERTEX_NUM];  
-gps_sphere_t  gps_sphere_start  ,gps_sphere_now, gps_sphere_target, gps_sphere_end;
-u8 start_driverless_flag=0;
 
-u8 g_ykSafty_num = 0;
+static gps_sphere_t  gps_sphere_start  , gps_sphere_target, gps_sphere_end;
 
-char mode_name[20];
+static u8 g_ykSafty_num = 0;
+
+
 
 extern u16 ADC_Value_Arr[ADC_AVERAGE_CNT][2];
 
@@ -63,8 +61,7 @@ int main(void)
 	float  angle_increment = 360.0/3.3; //传感器每变化 1V 角度增量
 	
 	float Left_wheel_angle =0.0 , Right_wheel_angle = 0.0;
-	
-	extern u16  send_steer_angle;   //原始角度扩大90倍  15位为方向，0左，1右
+
 	
 	float expect_angle =0.0 , angle_differ = 0.0;
 	
@@ -89,7 +86,6 @@ int main(void)
 	float lat_step,lon_step; //经纬度的步长
 	u8 switch_lastpoint_flag=1;
 	
-	float east_speed, north_speed, down_speed;
 
 	LED0 = 0;
 	system_init();
@@ -101,6 +97,7 @@ int main(void)
  		delay_ms(200);
 		LED1 =!LED1;
 		LED0=!LED0;
+		LCD_ShowString(20,20,26*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"please check the WIRELESS!")
 	}
 	NRF24L01_RX_Mode();	
 #endif
@@ -121,37 +118,9 @@ int main(void)
 	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*12,15*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"segment status:");
 	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*13,11*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"curret yaw:");
 	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*14,11*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"expect yaw:");
-#ifdef DEBUG
-	strcpy(mode_name,"debug");
-#endif
 	
   while(1)//25ms
 	{
-		if(gps_data_buf[1]==0x14 && gps_data_buf[2] ==0x64)
-		{
-			gps_sphere_now.yaw = *(float  *)gpsPtr->yaw;
-			memcpy(convert.in,gpsPtr->lon,8);
-			gps_sphere_now.lon = convert.out;
-			memcpy(convert.in,gpsPtr->lat,8);
-			gps_sphere_now.lat = convert.out;
-			
-						
-			//generate send msg
-			send_lon = gps_sphere_now.lon *180/pi *10000000;
-			send_lat = gps_sphere_now.lat *180/pi *10000000;
-			send_yaw = gps_sphere_now.yaw *180/pi *100;
-			
-			send_gps_status = ((gpsPtr->a[2])<<4 )>>5 ; //a[2]的 4,5 6字节表示定位状态
-			send_satellites = 10;  
-			
-			east_speed =  *(float *)gpsPtr->vel_e;
-			north_speed = *(float *)gpsPtr->vel_n;
-			down_speed = *(float *)gpsPtr->down_velocity;
-			send_speed = sqrt(east_speed*east_speed+north_speed*north_speed+down_speed*down_speed)*3.6*100;//km/h  放大100倍
-		
-		}
-		
-		
 		for(num_use_to_for_cycle=0,Left_front_wheel_Adc_sum=0,Right_front_wheel_Adc_sum =0;
 			num_use_to_for_cycle<ADC_AVERAGE_CNT ; num_use_to_for_cycle++)
 		{
@@ -184,8 +153,8 @@ int main(void)
 		
 		if(start_driverless_flag ==0)//非无人驾驶状态才能使用遥控器
 		{
-#if(YKMode==1)
 			strcpy(mode_name,"Record Point");
+#if(YKMode==1)
 			if(NRF24L01_RxPacket(wirelessBuf)==0 && (wirelessBuf[31]&0xff) ==1)//收到消息  末位校验
 			{
 				g_ykSafty_num = 0;//每收到一次消息 计数值清零
@@ -204,7 +173,7 @@ int main(void)
 		}
 		else//无人驾驶模式
 		{
-#ifndef DEBUG
+
 			strcpy(mode_name,"Driverless  ");
 //以下内容在一个步长内只需要计算一次
 			if(switch_lastpoint_flag == 1)  //第一次进入程序时flag=1；
@@ -265,12 +234,6 @@ int main(void)
 //	不同汽车模型修改以上代码
 			}
 			
-			
-#else
-				request_angle = 20.;
-#endif
-			
-			print_count ++;
 		}
 		
 //显示				
@@ -288,10 +251,8 @@ int main(void)
 		sprintf(show_current_yaw,"%3.1f",gps_sphere_now.yaw*180/3.1415926);
 		LCD_ShowString(LCD_LU_X+11*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*13,5*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_current_yaw);
 		
-		LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*0 ,6*LCD_FOND_SIZE/2 ,LCD_FOND_SIZE,LCD_FOND_SIZE,"mode :");
+		//LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*0 ,6*LCD_FOND_SIZE/2 ,LCD_FOND_SIZE,LCD_FOND_SIZE,"mode :");
 	
-	
-		
 		delay_ms(50);
 //	//	num = TIM2 ->CNT;
 //		//printf("%d\t%d\r\n",timer_full ,num);

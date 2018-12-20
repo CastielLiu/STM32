@@ -2,8 +2,6 @@
 #define __EXIT_H	 
 #include "sys.h"
 
-#define MAX_PATH_VERTEX_NUM 10
-
 //#define DEBUG
 
 

@@ -189,6 +189,7 @@ void uart3_init(u32 bound){
 	USART_InitStructure.USART_Mode = USART_Mode_Rx ;	//收
 
   USART_Init(USART3, &USART_InitStructure); 
+  
   USART_ITConfig(USART3, USART_IT_IDLE, ENABLE); //空闲中断
   
   USART_DMACmd(USART3,USART_DMAReq_Rx,ENABLE); //使能串口3的DMA接收
@@ -203,9 +204,14 @@ void USART3_IRQHandler(void)
 
 	if(USART_GetITStatus(USART3, USART_IT_IDLE) != RESET)
 	{
+		//USART_ClearFlag(USART3,USART_FLAG_RXNE);
 		temp = USART3->SR;
 		temp = USART3->DR; //清除中断标志
+		
+		//printf("temp = %x\r\n",temp);
 
+		MYDMA_Enable( DMA1_Channel3); //开启传输,吸收传输剩余的数据 ，可以通过清除DMA未传输标志(未找到)
+		delay_us(10);
 		MYDMA_Enable( DMA1_Channel3); //开启传输
 	}
 }

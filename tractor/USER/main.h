@@ -1,6 +1,7 @@
 #ifndef MAIN_H_
 #define MAIN_H_
 
+#include "global_params.h"
 #include "led.h"
 #include "delay.h"
 #include "key.h"
@@ -12,7 +13,6 @@
 #include "exti.h"
 #include "direction.h"
 #include "can.h"
-#include "navigation2.h"
 #include "beep.h"
 #include "lcd.h"
 #include "math.h"
@@ -21,19 +21,16 @@
 #include "capture.h"
 #include "dma.h"
 
-#define YKMode 1
+
+#define YKMode 0
 
 #if(YKMode==1)
 	#include "24l01.h"
 	#include "wireless_data.h"
 #endif
-u8 gps_data_buf[105];
 
-gps_data_t *gpsPtr = (gps_data_t *)&(gps_data_buf[1]);
 
-int send_lon,send_lat,send_height;
-u16 send_speed,send_yaw;
-u8 send_gps_status,send_satellites;   //use to can send msg 
+
 
 void system_init()
 {
@@ -59,6 +56,7 @@ void system_init()
 
 	MYDMA_Enable(DMA1_Channel3);//开始一次DMA传输 目的是接收完成后触发空闲中断
 								//然后在空闲中断中再次开启传输
+								//DMA开启后一直监听串口  一有数据立刻接收
 	uart3_init(115200);
 	
 	ADC_DMA_Config(); //ADC DMA传输配置
@@ -66,10 +64,6 @@ void system_init()
 	LCD_Init();
 	printf("初始化完成...\r\n");
 }
-union CON
-{
-	u8 in[8];
-	double out;
-}convert;
+
 
 #endif 

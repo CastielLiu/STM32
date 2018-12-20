@@ -4,7 +4,7 @@
 #include "delay.h"
 #include "usart.h"
 #include "beep.h"
-#include "navigation2.h"
+#include "global_params.h"
 #include "string.h"
 #include "lcd.h"
 
@@ -71,11 +71,9 @@ void EXTIX_Init(void)
 }
 
 
-extern gps_sphere_t target_point[MAX_PATH_VERTEX_NUM]; //四个顶点
-extern gps_sphere_t  gps_sphere_now;
-extern u8 start_driverless_flag;
-u8 actual_path_vertwx_num;
-u8 point_seq_=0;
+
+
+static u8 point_seq_=0;
 
 //外部中断0服务程序 
 void EXTI0_IRQHandler(void)
@@ -84,26 +82,36 @@ void EXTI0_IRQHandler(void)
 	char show_lat[12];
 	float record_dis_threshold = 1.5;//m
 	float	dis ;
+	
+	EXTI_ClearITPendingBit(EXTI_Line0); //清除LINE0上的中断标志位 
+	
 	if(point_seq_ ==0 )
-		dis= record_dis_threshold +1.5;//距离设置为大于record_dis_threshold
+		dis= record_dis_threshold +1.5;//距离设置为大于record_dis_threshold的值
 	else
 		dis = point2point_dis(target_point[point_seq_-1],gps_sphere_now);
 
 	//printf("\r\n%.8f\t%.8f\t\t%.8f\t%.8f\tpoint_seq_=%d\r\n",target_point[point_seq_].lat*180/pi,target_point[point_seq_].lon*180/pi,gps_sphere_now.lat*180/pi,gps_sphere_now.lon*180/pi,point_seq_);
 	delay_ms(10);//消抖
+	if(gps_sphere_now.lat==0.0 || gps_sphere_now.lon == 0.0)
+	{
+		LCD_ShowString(LCD_LU_X+25*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*1+(point_seq_)*LCD_FOND_SIZE*2,11*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"data error!");
+		return;
+	}
 	if(WK_UP==1 && start_driverless_flag ==0)	 	 //WK_UP按键 且 未处于无人驾驶状态，防止无人驾驶时误触按键导致目标点重新记录
 	{	
 		//两次记录目标点小于record_dis_threshold  m时相当于上一个点重新记录 	
 		if(dis > record_dis_threshold )//第一个目标点理应记录到0位置  
 		{
-				target_point[point_seq_] = gps_sphere_now;
-				sprintf(show_lon,"%03.7f",target_point[point_seq_].lon*180/3.1415926);
-				sprintf(show_lat,"%03.7f",target_point[point_seq_].lat*180/3.1415926);
-			
-				LCD_ShowString(LCD_LU_X+6*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*1+(point_seq_)*LCD_FOND_SIZE*2,11*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_lon);
-				LCD_ShowString(LCD_LU_X+6*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*2+(point_seq_)*LCD_FOND_SIZE*2,11*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_lat);
-			
-				point_seq_++;	
+			target_point[point_seq_] = gps_sphere_now;
+			sprintf(show_lon,"%03.7f",target_point[point_seq_].lon*180/3.1415926);
+			sprintf(show_lat,"%03.7f",target_point[point_seq_].lat*180/3.1415926);
+		//clear
+			LCD_ShowString(LCD_LU_X+25*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*1+(point_seq_)*LCD_FOND_SIZE*2,11*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"           ");
+
+			LCD_ShowString(LCD_LU_X+6*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*1+(point_seq_)*LCD_FOND_SIZE*2,11*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_lon);
+			LCD_ShowString(LCD_LU_X+6*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*2+(point_seq_)*LCD_FOND_SIZE*2,11*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_lat);
+		
+			point_seq_++;	
 			printf("%f\t%f\tdis=%f\r\n",gps_sphere_now.lon*180/3.1415926,gps_sphere_now.lat*180/3.1415926,dis);
 		}
 	//	printf("当前经纬度：%.7f\t%.7f\r\n",(gps_msg->lat),(gps_msg->lon));
@@ -119,7 +127,7 @@ void EXTI0_IRQHandler(void)
 		while(WK_UP==1) ;
 	}
 			//printf("KEY_UP\r\n");
-	EXTI_ClearITPendingBit(EXTI_Line0); //清除LINE0上的中断标志位  
+	 
 }
  
 
@@ -135,7 +143,8 @@ void EXTI3_IRQHandler(void)
 		{
 			actual_path_vertwx_num = point_seq_;  //right
 			//point_seq_ =0; //seq 清零，下次记录从头开始
-												//18.7.11 不要清零，下次记录复位单片机   目的是：取消无人驾驶之后  再次按下继续无人驾驶
+												//18.7.11 不要清零，下次记录复位单片机  
+												//			目的是：取消无人驾驶之后  再次按下继续无人驾驶
 			TIM3->CCR1 = 1531;  //设定固定速度
 			//printf("start_driverless_flag = 1 \r\n");
 		}

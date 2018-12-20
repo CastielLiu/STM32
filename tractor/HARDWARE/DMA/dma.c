@@ -1,5 +1,7 @@
 #include "dma.h"
 #include "usart.h"
+#include "global_params.h"
+#include "string.h"
 
 
 
@@ -36,6 +38,15 @@ void MYDMA_Config(DMA_Channel_TypeDef* DMA_CHx,u32 cpar,u32 cmar,u16 cndtr)
 	DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh; //DMA通道 x拥有中优先级 
 	DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;  //DMA通道x没有设置为内存到内存传输
 	DMA_Init(DMA_CHx, &DMA_InitStructure);  //根据DMA_InitStruct中指定的参数初始化DMA的通道USART1_Tx_DMA_Channel所标识的寄存器 
+	
+	 // NVIC 配置
+	NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel3_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=3 ;//抢占优先级3
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;		//子优先级3
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQ通道使能
+	NVIC_Init(&NVIC_InitStructure);	//根据指定的参数初始化VIC寄存器
+	
+	DMA_ITConfig(DMA1_Channel3,DMA_IT_TC,ENABLE);
 	
 } 
 
@@ -82,17 +93,55 @@ void ADC_DMA_Enable()
 
 
 
-extern u8 gps_data_buf[105];
+
+
+
+
+union CON
+{
+	u8 in[8];
+	double out;
+}convert;
 
 void DMA1_Channel3_IRQHandler(void)
 {
+	float east_speed, north_speed, down_speed;
+	
 	if(DMA_GetITStatus(DMA1_IT_TC3)!= RESET)//传输完成中断
 	{ 
 		DMA_ClearFlag(DMA1_FLAG_TC3);//清除dma传输完成中断标志
+		
 		if(gps_data_buf[1]==0x14 && gps_data_buf[2] ==0x64)
-			printf("right!!!\r\n");
+		{
+			gps_data_buf[1] = 0x00;
+			gps_data_buf[2] = 0x00;
+			
+			gps_sphere_now.yaw = *(float  *)gpsPtr->yaw;
+			memcpy(convert.in,gpsPtr->lon,8);
+			gps_sphere_now.lon = convert.out;
+			memcpy(convert.in,gpsPtr->lat,8);
+			gps_sphere_now.lat = convert.out;
+			
+						
+			//generate send msg
+			send_lon = gps_sphere_now.lon *180/pi *10000000;
+			send_lat = gps_sphere_now.lat *180/pi *10000000;
+			send_yaw = gps_sphere_now.yaw *180/pi *100;
+			
+			send_gps_status = ((gpsPtr->a[2])<<4 )>>5 ; //a[2]的 4,5 6字节表示定位状态
+			send_satellites = 10;  
+			
+			east_speed =  *(float *)gpsPtr->vel_e;
+			north_speed = *(float *)gpsPtr->vel_n;
+			down_speed = *(float *)gpsPtr->down_velocity;
+			send_speed = sqrt(east_speed*east_speed+north_speed*north_speed+down_speed*down_speed)*3.6*100;//km/h  放大100倍
+			printf("right\r\n");
+		}
 		else
-			printf("%x  %x\r\n",gps_data_buf[1],gps_data_buf[2]);
+		{
+			USART_SendData(USART3,0xff);
+		}
+		
 		
 	}
 }	

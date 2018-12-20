@@ -5,6 +5,7 @@
 #include "can.h"
 #include "delay.h"
 #include "dma.h"
+#include "global_params.h"
 
 
 
@@ -33,13 +34,6 @@ void TIM5_Init(u16 arr,u16 psc)
 	
   TIM_Cmd(TIM5,ENABLE ); 	//使能定时器5
 }
-
-
-u16  send_steer_angle;   //原始角度扩大90倍  15字节为方向，0左，1右
-extern int send_lon,send_lat,send_height;
-extern u16 send_speed,send_yaw;
-extern u8 send_gps_status,send_satellites;   //use to can send msg 
-
 
 
 u8 send_buf_0x4C0[8];
