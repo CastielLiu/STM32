@@ -41,6 +41,7 @@ int main(void)
 	u8 target_point_seq = 0; //序号
 	
 	char show_angle[6];
+	char show_exAngle[6];
 	char show_speed[6]="0.00";
 	char show_target_status[7]; //1/4
 	char show_segment_status[7];// 1/50
@@ -48,7 +49,7 @@ int main(void)
 	char show_expect_yaw[5];
 	
 	float total_dis =0.0;  //起点到末点的距离  用于片段划分
-	int segment_num=0 , segment_seq=1; //起点到末点的分段数，当前所处段数
+	int segment_num=0 , segment_seq=0; //起点到末点的分段数，当前所处段数
 	float lat_step,lon_step; //经纬度的步长
 	u8 switch_lastpoint_flag=1;
 	
@@ -68,7 +69,7 @@ int main(void)
 	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*6 ,22*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"                   Lat");
 	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*7 ,22*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"D    :             Lon");
 	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*8 ,22*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"                   Lat");
-	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*9 ,16*LCD_FOND_SIZE/2 ,LCD_FOND_SIZE,LCD_FOND_SIZE,"angle:     deg");
+	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*9 ,35*LCD_FOND_SIZE/2 ,LCD_FOND_SIZE,LCD_FOND_SIZE,"angle:     deg  exAngle:     deg");
 	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*10,16*LCD_FOND_SIZE/2 ,LCD_FOND_SIZE,LCD_FOND_SIZE,"speed:     km/h");
 	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*11,15*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"target  status:");
 	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*12,15*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"segment status:");
@@ -152,9 +153,13 @@ int main(void)
 		
 //显示				
 		POINT_COLOR=RED;//设置字体为红色 
-		sprintf(show_angle,"%2.2f",road_wheel_angle);
+		sprintf(show_angle,"%2.1f",road_wheel_angle);
 		LCD_ShowString(LCD_LU_X+6*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*0,12*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,mode_name);	
 		LCD_ShowString(LCD_LU_X+6*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*9,6*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_angle);
+		
+		sprintf(show_exAngle,"%2.1f",expect_angle);
+		LCD_ShowString(LCD_LU_X+24*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*9,6*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_exAngle);
+		
 		sprintf(show_speed,"%2.2f",g_vehicleSpeed);
 		LCD_ShowString(LCD_LU_X+6*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*10,6*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_speed);
 		sprintf(show_target_status,"%d/%d",target_point_seq+1,actual_path_vertwx_num);
@@ -165,8 +170,6 @@ int main(void)
 		LCD_ShowString(LCD_LU_X+12*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*13,5*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_current_yaw);
 	
 		delay_ms(500);
-		steer_control(20.0); //clock wise 
-		//printf("steering...\r\n");
 
 	}	 
 	

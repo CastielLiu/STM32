@@ -205,6 +205,8 @@ void USART3_IRQHandler(void)
 {
 	u32 temp;
 	char tempBuf[DMA_DATA_NUM]={0};
+	
+	u8 parseStatus = 0;
 
 	if(USART_GetITStatus(USART3, USART_IT_IDLE) != RESET)
 	{
@@ -216,7 +218,9 @@ void USART3_IRQHandler(void)
 		MYDMA_Enable( DMA1_Channel3); //¿ªÆô´«Êä
 		
 		//printf("%s\r\n",tempBuf);
-		gpsParse(tempBuf);
+		parseStatus = gpsParse(tempBuf);
+		
+		printf("status=%d\r\n",parseStatus);
 	}
 }
 #endif	

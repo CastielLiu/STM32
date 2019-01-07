@@ -39,7 +39,7 @@ u8 gpsParse(const char *buf)
 	GetComma(buf,commaLocation);
 	strncpy(tempBuf,&buf[commaLocation[2]+1],commaLocation[3]-commaLocation[2]-1);
 	status = tempBuf[0];
-
+	printf("%s\r\n",buf);
 	if('A'==status)//数据有效
 	{
 		strncpy(tempBuf,&buf[commaLocation[3]+1],commaLocation[4]-commaLocation[3]-1);
@@ -50,11 +50,13 @@ u8 gpsParse(const char *buf)
 		tempLat = (tempLat - (int)(tempLat /100 )*100 )/60 + (int)(tempLat /100 ) ;
 		tempLon = (tempLon - (int)(tempLon /100 )*100 )/60 + (int)(tempLon /100 ) ;
 		
-		if(tempLat > 90 || tempLat< 0 || tempLon> 180 || tempLon<0 ) return 3;
+		if(tempLat >= 90 || tempLat<= 0 || tempLon>=180 || tempLon<=0 ) return 3;
 		
 		strncpy(tempBuf,&buf[commaLocation[8]+1],commaLocation[9]-commaLocation[8]-1);
 		tempYaw = atof(tempBuf);
-		if(tempYaw >360 || tempYaw<0) return 3;
+		
+		//printf("yaw = %f\r\n",tempYaw);
+		if(tempYaw >360.0 || tempYaw<0.0) return 3;
 		
 		strncpy(tempBuf,&buf[commaLocation[7]+1],commaLocation[8]-commaLocation[7]-1);
 		
@@ -66,7 +68,7 @@ u8 gpsParse(const char *buf)
 		
 		
 		
-		printf("lat=%f\tlon=%fyaw=%f\r\n",gps_sphere_now.lat,gps_sphere_now.lon,gps_sphere_now.yaw);
+	//	printf("lat=%f\tlon=%fyaw=%f\r\n",gps_sphere_now.lat,gps_sphere_now.lon,gps_sphere_now.yaw);
 		return 0;
 	}
 	else

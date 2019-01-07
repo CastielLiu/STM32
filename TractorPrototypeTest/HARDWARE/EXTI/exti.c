@@ -115,13 +115,14 @@ void EXTI0_IRQHandler(void)
 			point_seq_++;	
 			printf("%f\t%f\tdis=%f\r\n",gps_sphere_now.lon*180/3.1415926,gps_sphere_now.lat*180/3.1415926,dis);
 		
+			/*
 			BEEP = 1;
 			delay_ms(300);
 			BEEP = 0;
 			delay_ms(300);
 			BEEP = 1 ;
 			delay_ms(300);
-			BEEP = 0;
+			BEEP = 0; */
 		}
 		
 		while(WK_UP==1) ;

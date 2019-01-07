@@ -598,6 +598,11 @@
               <FileType>1</FileType>
               <FilePath>..\STM32F10x_FWLib\src\stm32f10x_dma.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32f10x_bkp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\STM32F10x_FWLib\src\stm32f10x_bkp.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -627,6 +632,11 @@
               <FileName>steering_motor.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\src\steering_motor.c</FilePath>
+            </File>
+            <File>
+              <FileName>function.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\function.c</FilePath>
             </File>
           </Files>
         </Group>

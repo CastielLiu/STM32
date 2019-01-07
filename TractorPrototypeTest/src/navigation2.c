@@ -28,6 +28,7 @@ void relative_XY_dis_yaw(gps_sphere_t  gps_base,gps_sphere_t  gps,gps_rect_t *re
 
 	rectangular->distance = sqrt(rectangular->x * rectangular->x + rectangular->y * rectangular->y);
 	rectangular->yaw = atan2(rectangular->x,rectangular->y);
+	if(rectangular->yaw <0 ) rectangular->yaw += 2*pi;
 }
 //右偏为正，左偏为负
 float LateralError(double t_yaw_start,double t_yaw_now,float dis2end)
