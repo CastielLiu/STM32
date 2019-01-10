@@ -54,23 +54,29 @@ void TIM5_IRQHandler(void)
 			memcpy(&send_buf_0x4C0[4],&send_lon,4);
 			Can_Send_Msg(0x4C0,send_buf_0x4C0,8);
 			
+		}
+		else if(count%5==1)
+		{
 			memcpy(send_buf_0x4C1,&send_height,4);
-			Can_Send_Msg(0x4C1,send_buf_0x4C1,4);
-			
+			Can_Send_Msg(0x4C1,send_buf_0x4C1,8);
+		}
+		else if(count%5==2)
+		{
 			memcpy(send_buf_0x4C2,&send_speed,2);
 			memcpy(&send_buf_0x4C2[2],&send_yaw,2);
 			memcpy(&send_buf_0x4C2[4],&send_gps_status,1);
 			memcpy(&send_buf_0x4C2[5],&send_satellites,1);
-			Can_Send_Msg(0x4C2,send_buf_0x4C2,6);
-			
+			Can_Send_Msg(0x4C2,send_buf_0x4C2,8);
+		}
+		else if(count%5==3)
+		{
 			if((send_steer_angle & 0x8000)==0)
 				send_buf_0x4C3[0] = 2;//左
 			else
 				send_buf_0x4C3[0] = 1;//右偏
 			send_steer_angle = (send_steer_angle & 0x7fff)*10/9; //前一时刻被放大了90倍  现在调整为100倍
 			memcpy(&send_buf_0x4C3[1],&send_steer_angle,2);
-			Delay(1);
-			Can_Send_Msg(0x4C3,send_buf_0x4C3,3);
+			Can_Send_Msg(0x4C3,send_buf_0x4C3,8);
 		}
 		
 //			printf("send_steer_angle=%d\r\n",send_steer_angle);
