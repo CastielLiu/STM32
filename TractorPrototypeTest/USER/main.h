@@ -46,7 +46,7 @@ void system_init()
 	EXTIX_Init();
 	TIM5_Init(10000,72-1);	// 10ms溢出 用于计时 
 	
-	MYDMA_Config(DMA1_Channel3,(u32)&USART3->DR,(u32)gps_data_buf,DMA_DATA_NUM);  //DMA通道、 起止地址以及传输数据量设置
+	MYDMA_Config(DMA1_Channel3,(u32)&USART3->DR,(u32)g_gps_data_buf,DMA_DATA_NUM);  //DMA通道、 起止地址以及传输数据量设置
 
 	MYDMA_Enable(DMA1_Channel3);//开始一次DMA传输 目的是接收完成后触发空闲中断
 								//然后在空闲中断中再次开启传输

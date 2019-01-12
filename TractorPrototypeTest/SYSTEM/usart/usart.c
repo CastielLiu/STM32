@@ -214,7 +214,9 @@ void USART3_IRQHandler(void)
 		temp = USART3->SR;
 		temp = USART3->DR; //清除中断标志
 		
-		memcpy(tempBuf,gps_data_buf,DMA_DATA_NUM);
+		memcpy(tempBuf,g_gps_data_buf,DMA_DATA_NUM);//将DMA接收的数据备份后再开启下一次传输、
+													//防止数据覆盖
+		
 		MYDMA_Enable( DMA1_Channel3); //开启传输
 		
 		//printf("%s\r\n",tempBuf);

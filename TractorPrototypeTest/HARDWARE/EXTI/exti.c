@@ -8,6 +8,7 @@
 #include "string.h"
 #include "lcd.h"
 #include "steering_motor.h"
+#include "function.h"
 
 //////////////////////////////////////////////////////////////////////////////////	 
 //本程序只供学习使用，未经作者许可，不得用于其它任何用途
@@ -72,63 +73,16 @@ void EXTIX_Init(void)
 }
 
 
-
-
-static u8 point_seq_=0;
-
 //外部中断0服务程序 
 void EXTI0_IRQHandler(void)
 {
-	char show_lon[12];
-	char show_lat[12];
-	float record_dis_threshold = 1.5;//m
-	float	dis ;
-	
 	EXTI_ClearITPendingBit(EXTI_Line0); //清除LINE0上的中断标志位 
-	
-	if(point_seq_ ==0 )
-		dis= record_dis_threshold +1.5;//距离设置为大于record_dis_threshold的值
-	else
-		dis = point2point_dis(target_point[point_seq_-1],gps_sphere_now);
+	delay_ms(10);
+	if(WK_UP ==1)
+		recordTargetPoint(1.5);
+		
+	while(WK_UP==1) ;
 
-	//printf("\r\n%.8f\t%.8f\t\t%.8f\t%.8f\tpoint_seq_=%d\r\n",target_point[point_seq_].lat*180/pi,target_point[point_seq_].lon*180/pi,gps_sphere_now.lat*180/pi,gps_sphere_now.lon*180/pi,point_seq_);
-	delay_ms(10);//消抖
-	if(gps_sphere_now.lat==0.0 || gps_sphere_now.lon == 0.0)
-	{
-		LCD_ShowString(LCD_LU_X+25*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*1+(point_seq_)*LCD_FOND_SIZE*2,11*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"data error!");
-		return;
-	}
-	if(WK_UP==1 && start_driverless_flag ==0)	 	 //WK_UP按键 且 未处于无人驾驶状态，防止无人驾驶时误触按键导致目标点重新记录
-	{	
-		//两次记录目标点小于record_dis_threshold  m时相当于上一个点重新记录 	
-		if(dis > record_dis_threshold )//第一个目标点理应记录到0位置  
-		{
-			target_point[point_seq_] = gps_sphere_now;
-			sprintf(show_lon,"%03.7f",target_point[point_seq_].lon*180/3.1415926);
-			sprintf(show_lat,"%03.7f",target_point[point_seq_].lat*180/3.1415926);
-		//clear
-			LCD_ShowString(LCD_LU_X+25*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*1+(point_seq_)*LCD_FOND_SIZE*2,11*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"           ");
-
-			LCD_ShowString(LCD_LU_X+6*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*1+(point_seq_)*LCD_FOND_SIZE*2,11*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_lon);
-			LCD_ShowString(LCD_LU_X+6*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*2+(point_seq_)*LCD_FOND_SIZE*2,11*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_lat);
-		
-			point_seq_++;	
-			printf("%f\t%f\tdis=%f\r\n",gps_sphere_now.lon*180/3.1415926,gps_sphere_now.lat*180/3.1415926,dis);
-		
-			/*
-			BEEP = 1;
-			delay_ms(300);
-			BEEP = 0;
-			delay_ms(300);
-			BEEP = 1 ;
-			delay_ms(300);
-			BEEP = 0; */
-		}
-		
-		while(WK_UP==1) ;
-	}
-			//printf("KEY_UP\r\n");
-	 
 }
  
 
@@ -139,15 +93,7 @@ void EXTI3_IRQHandler(void)
 	delay_ms(10);//消抖
 	if(KEY1==0)	 //按键KEY1
 	{
-		if(start_driverless_flag==0)
-		{
-			actual_path_vertwx_num = point_seq_;
-			if(actual_path_vertwx_num >2)
-				start_driverless_flag =1;
-		}
-		else
-			start_driverless_flag = 0;
-		
+		switchDriveMode();
 		while(KEY1==0) ;
 	}		 
 	EXTI_ClearITPendingBit(EXTI_Line3);  //清除LINE3上的中断标志位  

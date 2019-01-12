@@ -64,25 +64,12 @@ void MYDMA_Enable(DMA_Channel_TypeDef*DMA_CHx)
 
 void DMA1_Channel3_IRQHandler(void)
 {
-	float east_speed, north_speed, down_speed;
-	
 	if(DMA_GetITStatus(DMA1_IT_TC3)!= RESET)//传输完成中断
 	{ 
 		DMA_ClearFlag(DMA1_FLAG_TC3);//清除dma传输完成中断标志
 	}
 }	
-/*			
-			//generate send msg
-			send_lon = gps_sphere_now.lon *180/pi *10000000;
-			send_lat = gps_sphere_now.lat *180/pi *10000000;
-			send_yaw = gps_sphere_now.yaw *180/pi *100;
-		
-			send_speed = 10;//km/h  放大100倍
-		
-			printf("right\r\n");
-		}
-	
-*/
+ 
 
 
 
