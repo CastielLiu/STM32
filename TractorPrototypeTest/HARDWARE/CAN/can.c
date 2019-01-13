@@ -113,33 +113,46 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
 	
 	switch(RxMessage.StdId)
 	{
-		case 0x500: //AngleSensorAdValueOffset
-			if(RxMessage.Data[0] == 0xBB)
+		case 0x3C0:  
+			if(RxMessage.Data[0] == STEER_VERIFY)
 			{
 				while(0 == (angleSensorAdvalue = getAdcValue())) ;
 				*(__IO uint32_t *)((uint32_t)BKP_BASE + BKP_DR2) |= 0x000A; 
 						//BKP_DR2  最低字节为A 表示已经进行了转角传感器数据校准，初始化时检查此寄存器
 				BKP_WriteBackupRegister(BKP_DR3,angleSensorAdvalue); //AD偏移值写入BKP_DR3
 			}
+			else if(RxMessage.Data[0] == CLEAR_CONFIG_DATA)
+				clearBKP();
+			else if(RxMessage.Data[0] ==ANGLE_SENSOR_VERIFY)
+			{
+				uint16_t maxAdValue = RxMessage.Data[1]*256 + RxMessage.Data[2];
+				uint16_t maxAngle = RxMessage.Data[3]*256 + RxMessage.Data[4];
+				
+				if(RxMessage.Data[5]==1) maxAngle |= 0x80;
+				else maxAngle &= 0x7f;
+				
+				*(__IO uint32_t *)((uint32_t)BKP_BASE + BKP_DR2) |= 0x00A0;
+				//BKP_DR2 次低字节为A 表示已经进行了转角传感器参数设定
+				BKP_WriteBackupRegister(BKP_DR4,maxAdValue); //最大AD值
+				BKP_WriteBackupRegister(BKP_DR5,maxAngle); // 最大角度值 其中最高位为 方向
+			}
+			else if(RxMessage.Data[0]==RECORD_TARGET_POINT)
+				recordTargetPoint();
+			else if(RxMessage.Data[0]==START_DRIVERLESS)
+				startDriverless();
+			else if(RxMessage.Data[0]==PAUSE_DRIVERLESS)
+				pauseDriverless();
+			
 			break;
 		
-		case 0x501:
-			*(__IO uint32_t *)((uint32_t)BKP_BASE + BKP_DR2) |= 0x00A0;
-				//BKP_DR2 次低字节为A 表示已经进行了转角传感器参数设定
-			BKP_WriteBackupRegister(BKP_DR4,*(uint16_t *)RxMessage.Data); //最大AD值
-			BKP_WriteBackupRegister(BKP_DR5,*(uint16_t *)(&RxMessage.Data[2])); // 最大角度值 其中最高位为 方向
-			break;
-		case 0x001:
-			if(RxMessage.Data[0]==0xBB)
-				clearBKP();
-			break;
+		
 		default:
 			break;
 			
 	}
 	
 	printf("id = %x\t",RxMessage.StdId);
-	for(i=0;i<8;i++)
+	for(i=0;i<RxMessage.DLC;i++)
 		printf("%x\t",RxMessage.Data[i]);
 	printf("\r\n");
 }
@@ -185,16 +198,4 @@ u8 Can_Receive_Msg(u8 *buf)
 	return RxMessage.DLC;	
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 

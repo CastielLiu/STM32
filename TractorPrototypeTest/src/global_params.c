@@ -15,7 +15,7 @@ s16 g_s16_speed;
 uint16_t g_u16_yaw;
 
 u8 g_gps_status,g_gps_satellites;   //use to can send msg 
-s16  g_s16_steer_angle;   //原始角度扩大90倍  15字节为方向，0左，1右
+s16  g_s16_steer_angle;   
 
 u8 g_actual_path_vertwx_num=0; //路径顶点个数
 u8 g_recordTargetSeq = 0;//务必初始化为0
@@ -33,4 +33,6 @@ uint16_t g_AngleSensorMaxAngle = 360; //一般为整数！
 int8_t g_roadWheelAngle_dir = 1; //1左转为正，右转为负，-1 左转为负！
 
 float g_vehicleSpeed = 0.0;
+
+float g_MinDisBetweenTwoTarget = 1.5;//m
  

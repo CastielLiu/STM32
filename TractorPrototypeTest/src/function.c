@@ -82,35 +82,35 @@ u8 gpsParse(const char *buf)
 		return 1;
 }
 
-void switchDriveMode()
+
+void startDriverless()
 {
-	u8 can3C0Buf = 0;
-	if(g_start_driverless_flag==0)
+	u8 can3C0Buf = START_DRIVERLESS;
+	if(g_start_driverless_flag==1) return;
+	
+	g_actual_path_vertwx_num = g_recordTargetSeq;
+	if(g_actual_path_vertwx_num >2)
 	{
-		g_actual_path_vertwx_num = g_recordTargetSeq;
-		if(g_actual_path_vertwx_num >2)
-		{
-			g_start_driverless_flag =1;
-			can3C0Buf = 0x10;
-		}
+		g_start_driverless_flag =1;
+		Can_Send_Msg(0x3C0,&can3C0Buf,1);
 	}
-	else
-	{
-		g_start_driverless_flag = 0;
-		can3C0Buf = 0x20;
-	}
+}
+void pauseDriverless()
+{
+	u8 can3C0Buf = PAUSE_DRIVERLESS;
+	if(g_start_driverless_flag==0) return;
 	Can_Send_Msg(0x3C0,&can3C0Buf,1);
 }
 
-void recordTargetPoint(float record_dis_threshold)
+void recordTargetPoint()
 {
 	char show_lon[12];
 	char show_lat[12];
 	float	dis ;
-	u8 can3C0Buf = 0;
+	u8 can3C0Buf = RECORD_TARGET_POINT;
 	
 	if(g_recordTargetSeq ==0 )
-		dis= record_dis_threshold +1.5;//距离设置为大于record_dis_threshold的值
+		dis= g_MinDisBetweenTwoTarget  +1.5;//距离设置为大于record_dis_threshold的值
 	else
 		dis = point2point_dis(target_point[g_recordTargetSeq-1],g_gps_sphere_now);
 
@@ -122,7 +122,7 @@ void recordTargetPoint(float record_dis_threshold)
 	if(g_start_driverless_flag ==0)	 	 //未处于无人驾驶状态，防止无人驾驶时误触按键导致目标点重新记录
 	{	
 		//两次记录目标点小于record_dis_threshold  m时相当于上一个点重新记录 	
-		if(dis > record_dis_threshold )//第一个目标点理应记录到0位置  
+		if(dis > g_MinDisBetweenTwoTarget )//第一个目标点理应记录到0位置  
 		{
 			target_point[g_recordTargetSeq] = g_gps_sphere_now;
 			sprintf(show_lon,"%03.7f",target_point[g_recordTargetSeq].lon*180/3.1415926);
@@ -137,11 +137,8 @@ void recordTargetPoint(float record_dis_threshold)
 			//printf("%f\t%f\tdis=%f\r\n",g_gps_sphere_now.lon*180/3.1415926,g_gps_sphere_now.lat*180/3.1415926,dis);
 		
 			BEEP = 1; delay_ms(300); BEEP = 0; delay_ms(300); BEEP = 1 ; delay_ms(300); BEEP = 0; 
-			can3C0Buf = 0x40;
-			
+			Can_Send_Msg(0x3C0,&can3C0Buf,1);
 		}
-		else
-			can3C0Buf =0x80;
-		Can_Send_Msg(0x3C0,&can3C0Buf,1);
+		
 	}
 }

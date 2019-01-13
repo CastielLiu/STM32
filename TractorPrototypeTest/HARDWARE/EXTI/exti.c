@@ -79,7 +79,7 @@ void EXTI0_IRQHandler(void)
 	EXTI_ClearITPendingBit(EXTI_Line0); //清除LINE0上的中断标志位 
 	delay_ms(10);
 	if(WK_UP ==1)
-		recordTargetPoint(1.5);
+		recordTargetPoint();
 		
 	while(WK_UP==1) ;
 
@@ -93,7 +93,10 @@ void EXTI3_IRQHandler(void)
 	delay_ms(10);//消抖
 	if(KEY1==0)	 //按键KEY1
 	{
-		switchDriveMode();
+		if(g_start_driverless_flag==0)
+			startDriverless();
+		else
+			pauseDriverless();
 		while(KEY1==0) ;
 	}		 
 	EXTI_ClearITPendingBit(EXTI_Line3);  //清除LINE3上的中断标志位  

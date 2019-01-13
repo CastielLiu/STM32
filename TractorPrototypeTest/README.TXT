@@ -1,19 +1,18 @@
-北斗GPS
+北斗GPS  盛恒天宝转向电机 
+
+
 添加
 if(rectangular->yaw <0 ) rectangular->yaw += 2*pi;
 
 前轮左偏时全局转角为正，右偏为负！
 
 //GPS数据         USART3
-//预装载值寄存器     TIMx->ARR  
-//比较寄存器         TIMx->CCR2 
+ 
 //TIM5 用于计时
-//TIM2 用于编码器计数
+ 
 
 KEY1     进入或退出无人驾驶状态
 KEY_UP 记录目标点。
-
-非无人驾驶模式下，即记录模式下可遥控控制。
 
 canId 0x001 0字节 0xBB 清除后备区
 
