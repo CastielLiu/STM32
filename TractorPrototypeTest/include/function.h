@@ -15,8 +15,8 @@
 #define STOP_DRIVERLESS 6
 
 void clearBKP(void);
-void GetComma(const char *str,u8 *commaLocation_);
-u8 gpsParse(const char *buf);
+
+
 void recordTargetPoint();
 void pauseDriverless();
 void startDriverless();

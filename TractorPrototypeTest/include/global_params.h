@@ -3,11 +3,15 @@
 #include "sys.h"
 #include "navigation2.h"
 
+//#define BEIDOU_GPS
+#define NUOGENG_GPS
+
+
 #define MAX_PATH_VERTEX_NUM 10
 
-#define DMA_DATA_NUM 105  //大于实际包长  
+#define DMA_DATA_NUM 150  //大于实际包长  
 
-extern char g_gps_data_buf[DMA_DATA_NUM];
+extern u8 g_gps_data_buf[DMA_DATA_NUM];
 
 extern gps_sphere_t g_gps_sphere_now;
 

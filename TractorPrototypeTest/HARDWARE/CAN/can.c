@@ -145,7 +145,6 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
 			
 			break;
 		
-		
 		default:
 			break;
 			

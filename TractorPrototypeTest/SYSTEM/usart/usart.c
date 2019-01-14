@@ -7,12 +7,20 @@
 #include "dma.h"
 #include "beep.h"
 #include "function.h"
-/////////////////////
 #include "delay.h"
+#include "stdlib.h"
+
+#ifdef BEIDOU_GPS
+#include "beiDou_gps.h"
+#endif
+#ifdef NUOGENG_GPS
+#include "nuoGeng_gps.h"
+#endif
+
 ///////////////////////////////////////////////////////////// 	 
 //如果使用ucos,则包括下面的头文件即可.
 #if SYSTEM_SUPPORT_OS
-#include "includes.h"					//ucos 使用	  
+#include "includes.h"	 //ucos 使用	  
 #endif
 
 //////////////////////////////////////////////////////////////////
@@ -60,14 +68,7 @@ int GetKey (void)  {
 */
  
 #if EN_USART1_RX   //如果使能了接收
-//串口1中断服务程序
-//注意,读取USARTx->SR能避免莫名其妙的错误   	
-u8 USART_RX_BUF[USART_REC_LEN];     //接收缓冲,最大USART_REC_LEN个字节.
-//接收状态
-//bit15，	接收完成标志
-//bit14，	接收到0x0d
-//bit13~0，	接收到的有效字节数目
-u16 USART_RX_STA=0;       //接收状态标记	  
+
   
 void uart1_init(u32 bound){
   //GPIO端口设置
@@ -204,7 +205,9 @@ void uart3_init(u32 bound){
 void USART3_IRQHandler(void)   
 {
 	u32 temp;
-	char tempBuf[DMA_DATA_NUM]={0};
+	//u8 dataLength = DMA_DATA_NUM - DMA1_Channel3->CNDTR;
+	
+	//u8 tempBuf[DMA_DATA_NUM]={0};
 	
 	u8 parseStatus = 0;
 
@@ -214,13 +217,18 @@ void USART3_IRQHandler(void)
 		temp = USART3->SR;
 		temp = USART3->DR; //清除中断标志
 		
-		memcpy(tempBuf,g_gps_data_buf,DMA_DATA_NUM);//将DMA接收的数据备份后再开启下一次传输、
+		//memcpy(tempBuf,g_gps_data_buf,DMA_DATA_NUM);//将DMA接收的数据备份后再开启下一次传输、
 													//防止数据覆盖
 		
 		MYDMA_Enable( DMA1_Channel3); //开启传输
 		
 		//printf("%s\r\n",tempBuf);
-		parseStatus = gpsParse(tempBuf);
+#ifdef BEIDOU_GPS
+		parseStatus = gpsParseBeiDou(g_gps_data_buf);
+#endif
+#ifdef NUOGENG_GPS
+		parseStatus = gpsParseNuoGeng(g_gps_data_buf);
+#endif
 		
 		printf("status=%d\r\n",parseStatus);
 	}

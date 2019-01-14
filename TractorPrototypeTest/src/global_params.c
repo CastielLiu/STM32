@@ -2,7 +2,7 @@
 
 
 
-char g_gps_data_buf[DMA_DATA_NUM];
+u8 g_gps_data_buf[DMA_DATA_NUM];
 
 
 gps_sphere_t g_gps_sphere_now;

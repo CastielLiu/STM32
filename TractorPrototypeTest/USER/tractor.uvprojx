@@ -638,6 +638,16 @@
               <FileType>1</FileType>
               <FilePath>..\src\function.c</FilePath>
             </File>
+            <File>
+              <FileName>beiDou_gps.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\beiDou_gps.c</FilePath>
+            </File>
+            <File>
+              <FileName>nuoGeng_gps.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\nuoGeng_gps.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
