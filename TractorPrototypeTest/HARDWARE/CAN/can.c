@@ -142,6 +142,13 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
 				startDriverless();
 			else if(RxMessage.Data[0]==PAUSE_DRIVERLESS)
 				pauseDriverless();
+			else if(RxMessage.Data[0] ==STEERING_DEBUG)
+			{
+				uint8_t arr[2];
+				arr[0] = RxMessage.Data[2];
+				arr[1] = RxMessage.Data[1];
+				g_debugRoadWheelAngle = 1.0* (*(int16_t *)arr) /100;
+			}
 			
 			break;
 		

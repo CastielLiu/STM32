@@ -6,6 +6,7 @@
 
 void steeringEnable(void);
 uint16_t getAdcValue(void);
+float getCurrentRoadWheelAngle(void);
 void setSteeringRotate(float cycleNum);
 void setSteeringSpeed(uint8_t speed);
 uint16_t generateModBusCRC_byTable(const uint8_t *ptr,uint8_t size);

@@ -1,11 +1,12 @@
-#include"steering_motor.h"
+#include "steering_motor.h"
+#include "global_params.h"
 
 
 static uint8_t g_setSpeed_8bytesCmd[8] = {0x01,0x06,0x00,0x6a,0x00,0x00}; //2 bytes speed 2bytes check_num
 static uint8_t g_setRotate_13bytesCmd[13] = {0x01,0x10,0x01,0x36,0x00,0x02,0x04};//4 byte pulseNum 2bytes check_num
 										//0x0136 positive   0x0135 nagetive
 
-static uint8_t g_getAdValue_8bytesCmd[8]  = {0x01,0x03,0x40,0x0D,0x00,0x01,0x00,0x09}; //-> 01 03 02 {0A 32} 3F 31  16?AD? 
+static uint8_t g_getAdValue_8bytesCmd[8]  = {0x01,0x03,0x40,0x0D,0x00,0x01,0x00,0x09}; //-> 01 03 02 {0A 32} 3F 31  16bits AD值 
 
 
 const uint16_t CRC16Table[]={
@@ -88,8 +89,8 @@ void setSteeringRotate(float cycleNum)
 	sendControlCmd(g_setRotate_13bytesCmd,13); 
 }
 
-/*
-uint16_t getAdcValue()  
+
+uint16_t getAdcValue(void)  
 {
 	uint8_t i=0;
 	uint8_t buf[7];
@@ -110,14 +111,17 @@ uint16_t getAdcValue()
 		return buf[3]*256 + buf[4];
 	else
 	{
-		printf("读取AD值失败\r\n");
+		//printf("读取AD值失败\r\n");
 		return 0; //error
 	}
 }
-*/
-uint16_t getAdcValue()  
+
+float getCurrentRoadWheelAngle(void)
 {
-	return 2047;
+	uint16_t adValue = getAdcValue();
+	if(adValue==0) return 180.0; //error
+	else
+		return g_roadWheelAngle_dir * (adValue - g_AngleSensorAdValueOffset)*g_AngleSensorMaxAngle/g_AngleSensorMaxAdValue ;
 }
 
 

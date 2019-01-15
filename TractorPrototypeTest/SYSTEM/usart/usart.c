@@ -230,7 +230,7 @@ void USART3_IRQHandler(void)
 		parseStatus = gpsParseNuoGeng(g_gps_data_buf);
 #endif
 		
-		printf("status=%d\r\n",parseStatus);
+		//printf("status=%d\r\n",parseStatus);
 	}
 }
 #endif	

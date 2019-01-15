@@ -2887,6 +2887,7 @@ void LCD_ShowString(u16 x,u16 y,u16 width,u16 height,u8 size,u8 *p)
 	u8 x0=x;
 	width+=x;
 	height+=y;
+	LCD_Fill(x,y,width,height,WHITE);//add by wendao
     while((*p<='~')&&(*p>=' '))//判断是不是非法字符!
     {       
         if(x>=width){x=x0;y+=size;}

@@ -41,5 +41,6 @@ extern int8_t g_roadWheelAngle_dir; //1左转为正，右转为负，-1 左转为负！
 extern float g_vehicleSpeed;
 
 extern float g_MinDisBetweenTwoTarget ;
+extern float g_debugRoadWheelAngle;
 #endif
 

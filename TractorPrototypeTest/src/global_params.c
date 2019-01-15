@@ -35,4 +35,6 @@ int8_t g_roadWheelAngle_dir = 1; //1左转为正，右转为负，-1 左转为负！
 float g_vehicleSpeed = 0.0;
 
 float g_MinDisBetweenTwoTarget = 1.5;//m
+
+float g_debugRoadWheelAngle=0.0;
  

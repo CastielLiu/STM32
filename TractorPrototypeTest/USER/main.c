@@ -23,9 +23,6 @@
 #define DIS_STEP 0.2  //20cm per point
  
 
-
-
-
 static gps_sphere_t  gps_sphere_start  , gps_sphere_target, gps_sphere_end;
 
 int main(void)
@@ -53,7 +50,7 @@ int main(void)
 	float lat_step,lon_step; //经纬度的步长
 	u8 switch_lastpoint_flag=1;
 	
-	uint16_t u16_tempValue=0;
+	float tempFloat=0.0;
 	
 
 	LED0 = 0;
@@ -78,9 +75,14 @@ int main(void)
 	
   while(1)//25ms
 	{
-		if(g_start_driverless_flag ==0)//非无人驾驶状态才能使用遥控器
+		if(g_start_driverless_flag ==0) 
 		{
 			strcpy(g_mode_name,"Record Point");
+			//debug...
+			if((tempFloat =getCurrentRoadWheelAngle()) <50.0)//角度获取失败时值为180.0 
+				road_wheel_angle = tempFloat;
+			steer_control(g_debugRoadWheelAngle - road_wheel_angle);
+			expect_angle = g_debugRoadWheelAngle;
 		}
 		else//无人驾驶模式
 		{
@@ -137,12 +139,9 @@ int main(void)
 			turning_radius = -0.5 *rectangular.distance /sin(yaw_err); //根据汽车模型计算转弯半径与前轮转角的关系
 			//turning_radius *=100;//to cm 
 			
-			u16_tempValue = getAdcValue();//获取前轮转角传感器AD值
-			if(u16_tempValue != 0) 
-			{
-				road_wheel_angle = g_roadWheelAngle_dir * (u16_tempValue - g_AngleSensorAdValueOffset)*g_AngleSensorMaxAngle/g_AngleSensorMaxAdValue ;
-			}
-			
+			if((tempFloat =getCurrentRoadWheelAngle()) <50.0)
+				road_wheel_angle = tempFloat;
+
 			g_s16_steer_angle = road_wheel_angle*100; 
 			
 		//不同汽车模型修改以下代码				
@@ -157,13 +156,13 @@ int main(void)
 		POINT_COLOR=RED;//设置字体为红色 
 		sprintf(show_angle,"%2.1f",road_wheel_angle);
 		LCD_ShowString(LCD_LU_X+6*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*0,12*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,g_mode_name);	
-		LCD_ShowString(LCD_LU_X+6*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*9,6*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_angle);
+		LCD_ShowString(LCD_LU_X+6*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*9,5*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_angle);
 		
 		sprintf(show_exAngle,"%2.1f",expect_angle);
-		LCD_ShowString(LCD_LU_X+24*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*9,6*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_exAngle);
+		LCD_ShowString(LCD_LU_X+24*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*9,5*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_exAngle);
 		
 		sprintf(show_speed,"%2.2f",g_vehicleSpeed);
-		LCD_ShowString(LCD_LU_X+6*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*10,6*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_speed);
+		LCD_ShowString(LCD_LU_X+6*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*10,5*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_speed);
 		sprintf(show_target_status,"%d/%d",target_point_seq+1,g_actual_path_vertwx_num);
 		LCD_ShowString(LCD_LU_X+15*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*11,8*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_target_status);
 		sprintf(show_segment_status,"%d/%d",segment_seq,segment_num);
@@ -171,7 +170,7 @@ int main(void)
 		sprintf(show_current_yaw,"%3.1f",g_gps_sphere_now.yaw*180/3.1415926);
 		LCD_ShowString(LCD_LU_X+12*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*13,5*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_current_yaw);
 	
-		delay_ms(500);
+		delay_ms(30);
 
 	}	 
 	

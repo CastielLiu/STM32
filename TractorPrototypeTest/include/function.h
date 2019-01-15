@@ -13,6 +13,7 @@
 #define START_DRIVERLESS 4
 #define PAUSE_DRIVERLESS 5
 #define STOP_DRIVERLESS 6
+#define STEERING_DEBUG 7
 
 void clearBKP(void);
 
