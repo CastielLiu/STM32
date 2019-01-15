@@ -171,7 +171,8 @@ int main(void)
 		LCD_ShowString(LCD_LU_X+12*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*13,5*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,show_current_yaw);
 	
 		delay_ms(30);
-
+		//printf("lon:%3.7f\tlat:%3.7f\r\n",g_gps_sphere_now.lon*180.0/pi,g_gps_sphere_now.lat*180.0/pi);
+		LCD_ShowxNum(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*15,(u32)(rectangular.distance),3,LCD_FOND_SIZE,0);
 	}	 
 	
  }

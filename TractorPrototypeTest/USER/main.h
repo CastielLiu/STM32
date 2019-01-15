@@ -89,10 +89,10 @@ void system_init()
 	else
 		g_roadWheelAngle_dir = -1;
 	
-	printf("offset=%d\tmaxAngle=%d\tmaxAdValue=%d\tdir=%d\r\n", \
+	//printf("offset=%d\tmaxAngle=%d\tmaxAdValue=%d\tdir=%d\r\n", \
 				g_AngleSensorAdValueOffset,g_AngleSensorMaxAngle,g_AngleSensorMaxAdValue,g_roadWheelAngle_dir);	
 
-	printf("初始化完成...\r\n");
+	//printf("初始化完成...\r\n");
 }
 
 

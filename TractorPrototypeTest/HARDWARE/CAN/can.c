@@ -156,11 +156,11 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
 			break;
 			
 	}
-	
+	/*
 	printf("id = %x\t",RxMessage.StdId);
 	for(i=0;i<RxMessage.DLC;i++)
 		printf("%x\t",RxMessage.Data[i]);
-	printf("\r\n");
+	printf("\r\n");*/
 }
 #endif
 

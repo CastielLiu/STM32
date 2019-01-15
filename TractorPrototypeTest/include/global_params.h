@@ -3,8 +3,8 @@
 #include "sys.h"
 #include "navigation2.h"
 
-//#define BEIDOU_GPS
-#define NUOGENG_GPS
+#define BEIDOU_GPS
+//#define NUOGENG_GPS
 
 
 #define MAX_PATH_VERTEX_NUM 10

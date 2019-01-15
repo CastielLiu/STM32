@@ -31,6 +31,7 @@ void pauseDriverless()
 {
 	u8 can3C0Buf = PAUSE_DRIVERLESS;
 	if(g_start_driverless_flag==0) return;
+	else g_start_driverless_flag =0;
 	Can_Send_Msg(0x3C0,&can3C0Buf,1);
 }
 
@@ -68,7 +69,7 @@ void recordTargetPoint()
 			g_recordTargetSeq++;	
 			//printf("%f\t%f\tdis=%f\r\n",g_gps_sphere_now.lon*180/3.1415926,g_gps_sphere_now.lat*180/3.1415926,dis);
 		
-			BEEP = 1; delay_ms(300); BEEP = 0; delay_ms(300); BEEP = 1 ; delay_ms(300); BEEP = 0; 
+			//BEEP = 1; delay_ms(300); BEEP = 0; delay_ms(300); BEEP = 1 ; delay_ms(300); BEEP = 0; 
 			Can_Send_Msg(0x3C0,&can3C0Buf,1);
 		}
 		
