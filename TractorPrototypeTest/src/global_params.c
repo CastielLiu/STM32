@@ -37,4 +37,6 @@ float g_vehicleSpeed = 0.0;
 float g_MinDisBetweenTwoTarget = 1.5;//m
 
 float g_debugRoadWheelAngle=0.0;
+
+uint8_t g_debugEnable = 0;
  

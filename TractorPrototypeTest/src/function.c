@@ -8,31 +8,38 @@
 void clearBKP(void)
 {
 	uint16_t _BKP_DRx;
+	uint8_t buf = 0;
 	
 	for(_BKP_DRx = BKP_DR2; _BKP_DRx!=BKP_DR42; _BKP_DRx +=4 )
 		BKP_WriteBackupRegister(_BKP_DRx, 0x0000);
+	
+	Can_Send_Msg(0x3C0,&buf,1);
 }
 
 
+#define DRIVERLESS_STATE 1
+#define MANUAL_DRIVE_STATE 0
+#define PAUSE_DRIVERLESS_STATE 2
 
 void startDriverless()
 {
-	u8 can3C0Buf = START_DRIVERLESS;
+	u8 buf[2]={4,DRIVERLESS_STATE};
+
 	if(g_start_driverless_flag==1) return;
 	
 	g_actual_path_vertwx_num = g_recordTargetSeq;
 	if(g_actual_path_vertwx_num >2)
 	{
 		g_start_driverless_flag =1;
-		Can_Send_Msg(0x3C0,&can3C0Buf,1);
+		Can_Send_Msg(0x3C0,buf,2);
 	}
 }
 void pauseDriverless()
 {
-	u8 can3C0Buf = PAUSE_DRIVERLESS;
+	u8 buf[2]={4,PAUSE_DRIVERLESS_STATE};
 	if(g_start_driverless_flag==0) return;
 	else g_start_driverless_flag =0;
-	Can_Send_Msg(0x3C0,&can3C0Buf,1);
+	Can_Send_Msg(0x3C0,buf,2);
 }
 
 void recordTargetPoint()
@@ -74,4 +81,35 @@ void recordTargetPoint()
 		}
 		
 	}
+}
+
+void steeringVerify()
+{
+	uint16_t angleSensorAdvalue = 0;
+	while(0 == (angleSensorAdvalue = getAdcValue())) ;
+	*(__IO uint32_t *)((uint32_t)BKP_BASE + BKP_DR2) |= 0x000A; 
+			//BKP_DR2  最低字节为A 表示已经进行了转角传感器数据校准，初始化时检查此寄存器
+	BKP_WriteBackupRegister(BKP_DR3,angleSensorAdvalue); //AD偏移值写入BKP_DR3
+}
+void angleSensorVerify( const CanRxMsg *  RxMessage)
+{
+	uint16_t maxAdValue = RxMessage->Data[1]*256 + RxMessage->Data[2];
+	uint16_t maxAngle = RxMessage->Data[3]*256 + RxMessage->Data[4];
+	
+	if(RxMessage->Data[5]==1) maxAngle |= 0x8000;
+	else maxAngle &= 0x7fff;
+	
+	*(__IO uint32_t *)((uint32_t)BKP_BASE + BKP_DR2) |= 0x00A0;
+	//BKP_DR2 次低字节为A 表示已经进行了转角传感器参数设定
+	BKP_WriteBackupRegister(BKP_DR4,maxAdValue); //最大AD值
+	BKP_WriteBackupRegister(BKP_DR5,maxAngle); // 最大角度值 其中最高位为 方向
+}
+
+void steeringDebug(const CanRxMsg * RxMessage)
+{
+	uint8_t arr[2];
+	arr[0] = RxMessage->Data[2];
+	arr[1] = RxMessage->Data[1];
+	g_debugRoadWheelAngle = 1.0* (*(int16_t *)arr) /100;
+	g_debugEnable = RxMessage->Data[3];
 }

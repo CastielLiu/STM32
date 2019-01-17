@@ -6,176 +6,75 @@
   <configuration>
     <name>Debug</name>
     <outputs>
-      <file>$PROJ_DIR$\..\USER\stm8s_interruput.c</file>
-      <file>$PROJ_DIR$\..\USER\uart.c</file>
-      <file>$PROJ_DIR$\..\USER\delay_.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\uart.o</file>
-      <file>$PROJ_DIR$\..\USER\main.c</file>
-      <file>$PROJ_DIR$\..\USER\led.h</file>
-      <file>$TOOLKIT_DIR$\lib\dbgstm8smd.a</file>
-      <file>$PROJ_DIR$\Debug\Obj\stm8s_interruput.o</file>
-      <file>$PROJ_DIR$\..\USER\type_def.h</file>
-      <file>$PROJ_DIR$\..\USER\uart.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\Uart.pbd</file>
-      <file>$TOOLKIT_DIR$\inc\iostm8s105k4.h</file>
-      <file>$PROJ_DIR$\Debug\Exe\Uart.hex</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
-      <file>$PROJ_DIR$\..\USER\pstwo.c</file>
-      <file>$TOOLKIT_DIR$\inc\io_macros.h</file>
-      <file>$PROJ_DIR$\..\USER\clk_conf.c</file>
-      <file>$PROJ_DIR$\..\USER\delay_.c</file>
-      <file>$PROJ_DIR$\..\USER\led.c</file>
-      <file>$TOOLKIT_DIR$\config\lnkstm8s105k4.icf</file>
-      <file>$PROJ_DIR$\Debug\Obj\pstwo.pbi</file>
-      <file>$TOOLKIT_DIR$\inc\c\stdbool.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
       <file>$TOOLKIT_DIR$\lib\dlstm8smf.h</file>
       <file>$PROJ_DIR$\Debug\Obj\delay_.o</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
       <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
       <file>$PROJ_DIR$\Debug\Obj\led.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\delay_.pbi</file>
-      <file>$PROJ_DIR$\Debug\Exe\Uart.out</file>
-      <file>$PROJ_DIR$\..\USER\pstwo.h</file>
-      <file>$PROJ_DIR$\..\USER\sys.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\intrinsics.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\pstwo.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\uart.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\main.o</file>
-      <file>$TOOLKIT_DIR$\lib\dlstm8smf.a</file>
-      <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\clk_conf.pbi</file>
-      <file>$TOOLKIT_DIR$\inc\c\ystdio.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
+      <file>$TOOLKIT_DIR$\lib\dbgstm8smd.a</file>
+      <file>$PROJ_DIR$\..\USER\led.h</file>
+      <file>$PROJ_DIR$\..\USER\uart.c</file>
+      <file>$PROJ_DIR$\..\USER\delay_.c</file>
+      <file>$PROJ_DIR$\..\USER\type_def.h</file>
+      <file>$PROJ_DIR$\..\USER\stm8s_interruput.c</file>
+      <file>$PROJ_DIR$\..\USER\clk_conf.c</file>
+      <file>$PROJ_DIR$\..\USER\uart.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\Uart.pbd</file>
+      <file>$TOOLKIT_DIR$\inc\io_macros.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
+      <file>$TOOLKIT_DIR$\config\lnkstm8s105k4.icf</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdbool.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+      <file>$PROJ_DIR$\..\USER\led.c</file>
+      <file>$PROJ_DIR$\..\USER\delay_.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\stm8s_interruput.o</file>
+      <file>$PROJ_DIR$\..\USER\main.c</file>
+      <file>$PROJ_DIR$\..\USER\pstwo.c</file>
+      <file>$PROJ_DIR$\Debug\Obj\uart.o</file>
+      <file>$TOOLKIT_DIR$\inc\iostm8s105k4.h</file>
+      <file>$PROJ_DIR$\Debug\Exe\Uart.hex</file>
+      <file>$PROJ_DIR$\Debug\Obj\pstwo.pbi</file>
       <file>$PROJ_DIR$\..\USER\clk_conf.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\led.o</file>
-      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.o</file>
+      <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\intrinsics.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
+      <file>$TOOLKIT_DIR$\lib\dlstm8smf.a</file>
+      <file>$PROJ_DIR$\Debug\Obj\pstwo.o</file>
+      <file>$TOOLKIT_DIR$\inc\c\ystdio.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\delay_.pbi</file>
+      <file>$PROJ_DIR$\..\USER\pstwo.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\clk_conf.pbi</file>
       <file>$PROJ_DIR$\Debug\Obj\stm8s_interruput.pbi</file>
       <file>$PROJ_DIR$\Debug\Obj\clk_conf.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\uart.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\led.o</file>
+      <file>$PROJ_DIR$\..\USER\sys.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+      <file>$PROJ_DIR$\Debug\Exe\Uart.out</file>
     </outputs>
-    <file>
-      <name>[ROOT_NODE]</name>
-      <outputs>
-        <tool>
-          <name>ILINK</name>
-          <file> 30</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\USER\stm8s_interruput.c</name>
-      <outputs>
-        <tool>
-          <name>ICCSTM8</name>
-          <file> 7</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 46</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCSTM8</name>
-          <file> 9 8 11 15 21 33 23 27 45 24 25 22 35 13 34 42</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 34 11 27 23 25 33 13 8 21 15 35 22 9 45 42 24</file>
-        </tool>
-      </inputs>
-    </file>
     <file>
       <name>$PROJ_DIR$\..\USER\uart.c</name>
       <outputs>
         <tool>
-          <name>ICCSTM8</name>
-          <file> 3</file>
+          <name>BICOMP</name>
+          <file> 42</file>
         </tool>
         <tool>
-          <name>BICOMP</name>
-          <file> 37</file>
+          <name>ICCSTM8</name>
+          <file> 25</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
-          <name>ICCSTM8</name>
-          <file> 9 8 11 15 21 33 23 27 45 24 25 22 35 13 34 42</file>
-        </tool>
-        <tool>
           <name>BICOMP</name>
-          <file> 34 21 27 11 25 8 15 13 23 33 35 22 9 45 42 24</file>
+          <file> 31 18 3 26 0 10 15 16 5 32 33 19 13 46 36 2</file>
         </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\USER\main.c</name>
-      <outputs>
         <tool>
           <name>ICCSTM8</name>
-          <file> 38</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 40</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCSTM8</name>
-          <file> 43 8 11 15 21 33 9 23 27 45 24 25 22 35 13 34 42 5 31 32 2</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 24 21 27 2 5 15 23 45 32 9 31 8 11 33 34 43 42 35 13 25 22</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\USER\pstwo.c</name>
-      <outputs>
-        <tool>
-          <name>ICCSTM8</name>
-          <file> 36</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 20</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCSTM8</name>
-          <file> 31 32 8 11 15 21 33 2</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 21 11 15 32 2 8 33 31</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\USER\clk_conf.c</name>
-      <outputs>
-        <tool>
-          <name>ICCSTM8</name>
-          <file> 47</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 41</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCSTM8</name>
-          <file> 43 8 11 15 21 33</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 11 8 15 43 21 33</file>
+          <file> 13 10 26 15 18 32 5 3 46 2 0 19 33 16 31 36</file>
         </tool>
       </inputs>
     </file>
@@ -183,22 +82,68 @@
       <name>$PROJ_DIR$\..\USER\delay_.c</name>
       <outputs>
         <tool>
-          <name>ICCSTM8</name>
-          <file> 26</file>
+          <name>BICOMP</name>
+          <file> 37</file>
         </tool>
         <tool>
-          <name>BICOMP</name>
-          <file> 29</file>
+          <name>ICCSTM8</name>
+          <file> 1</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
-          <name>ICCSTM8</name>
-          <file> 2 32 8 11 15 21 33</file>
+          <name>BICOMP</name>
+          <file> 10 45 26 15 21 18 32</file>
         </tool>
         <tool>
+          <name>ICCSTM8</name>
+          <file> 21 45 10 26 15 18 32</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\USER\stm8s_interruput.c</name>
+      <outputs>
+        <tool>
           <name>BICOMP</name>
-          <file> 8 32 11 15 2 21 33</file>
+          <file> 40</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 22</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 31 26 3 5 0 32 16 10 18 15 33 19 13 46 36 2</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 13 10 26 15 18 32 5 3 46 2 0 19 33 16 31 36</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\USER\clk_conf.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 39</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 41</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 26 10 15 29 18 32</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 29 10 26 15 18 32</file>
         </tool>
       </inputs>
     </file>
@@ -206,37 +151,92 @@
       <name>$PROJ_DIR$\..\USER\led.c</name>
       <outputs>
         <tool>
-          <name>ICCSTM8</name>
-          <file> 44</file>
+          <name>BICOMP</name>
+          <file> 4</file>
         </tool>
         <tool>
-          <name>BICOMP</name>
-          <file> 28</file>
+          <name>ICCSTM8</name>
+          <file> 44</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
-          <name>ICCSTM8</name>
-          <file> 5 8 11 15 21 33</file>
+          <name>BICOMP</name>
+          <file> 26 10 15 7 18 32</file>
         </tool>
         <tool>
-          <name>BICOMP</name>
-          <file> 11 8 15 5 21 33</file>
+          <name>ICCSTM8</name>
+          <file> 7 10 26 15 18 32</file>
         </tool>
       </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\USER\main.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 43</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 30</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 2 18 3 21 7 15 5 46 45 13 38 10 26 32 31 29 36 33 16 0 19</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 29 10 26 15 18 32 13 5 3 46 2 0 19 33 16 31 36 7 38 45 21</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\USER\pstwo.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 28</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 35</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 18 26 15 45 21 10 32 38</file>
+        </tool>
+        <tool>
+          <name>ICCSTM8</name>
+          <file> 38 45 10 26 15 18 32 21</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 47</file>
+        </tool>
+      </outputs>
     </file>
     <file>
       <name>$PROJ_DIR$\Debug\Exe\Uart.out</name>
       <outputs>
         <tool>
           <name>OBJCOPY</name>
-          <file> 12</file>
+          <file> 27</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ILINK</name>
-          <file> 19 47 26 44 38 36 7 3 39 6</file>
+          <file> 17 41 1 44 30 35 22 25 34 6</file>
         </tool>
       </inputs>
     </file>

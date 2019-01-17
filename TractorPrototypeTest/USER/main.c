@@ -73,16 +73,22 @@ int main(void)
 	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*13,12*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"current yaw:");
 	LCD_ShowString(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*14,12*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"expect  yaw:");
 	
-  while(1)//25ms
+	while(1)//25ms
 	{
 		if(g_start_driverless_flag ==0) 
 		{
 			strcpy(g_mode_name,"Record Point");
 			//debug...
 			if((tempFloat =getCurrentRoadWheelAngle()) <50.0)//角度获取失败时值为180.0 
+			{
 				road_wheel_angle = tempFloat;
-			steer_control(g_debugRoadWheelAngle - road_wheel_angle);
-			expect_angle = g_debugRoadWheelAngle;
+				g_s16_steer_angle = road_wheel_angle*100;
+			}
+			if(1==g_debugEnable)
+			{
+				steer_control(g_debugRoadWheelAngle - road_wheel_angle);
+				expect_angle = g_debugRoadWheelAngle;//显示需要
+			}
 		}
 		else//无人驾驶模式
 		{
@@ -139,7 +145,7 @@ int main(void)
 			turning_radius = -0.5 *rectangular.distance /sin(yaw_err); //根据汽车模型计算转弯半径与前轮转角的关系
 			//turning_radius *=100;//to cm 
 			
-			if((tempFloat =getCurrentRoadWheelAngle()) <50.0)
+			if((tempFloat =getCurrentRoadWheelAngle()) <50.0) //角度获取失败时值为180.0 
 				road_wheel_angle = tempFloat;
 
 			g_s16_steer_angle = road_wheel_angle*100; 
@@ -172,7 +178,7 @@ int main(void)
 	
 		delay_ms(30);
 		//printf("lon:%3.7f\tlat:%3.7f\r\n",g_gps_sphere_now.lon*180.0/pi,g_gps_sphere_now.lat*180.0/pi);
-		LCD_ShowxNum(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*15,(u32)(rectangular.distance),3,LCD_FOND_SIZE,0);
+		//LCD_ShowxNum(LCD_LU_X,LCD_LU_Y + LCD_FOND_SIZE*15,(u32)(rectangular.distance),3,LCD_FOND_SIZE,0);
 	}	 
 	
  }

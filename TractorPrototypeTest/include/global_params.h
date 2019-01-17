@@ -42,5 +42,6 @@ extern float g_vehicleSpeed;
 
 extern float g_MinDisBetweenTwoTarget ;
 extern float g_debugRoadWheelAngle;
+extern uint8_t g_debugEnable;
 #endif
 

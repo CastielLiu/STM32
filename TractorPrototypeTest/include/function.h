@@ -5,6 +5,7 @@
 #include <string.h>
 #include "global_params.h"
 #include "can.h"
+#include "steering_motor.h"
 
 #define CLEAR_CONFIG_DATA 0
 #define STEER_VERIFY 1
@@ -15,11 +16,18 @@
 #define STOP_DRIVERLESS 6
 #define STEERING_DEBUG 7
 
+#define DRIVERLESS_STATE 1
+#define MANUAL_DRIVE_STATE 0
+#define PAUSE_DRIVERLESS_STATE 2
+
 void clearBKP(void);
 
 
 void recordTargetPoint();
 void pauseDriverless();
 void startDriverless();
+void steeringVerify();
+void angleSensorVerify( const CanRxMsg *  RxMessage);
+void steeringDebug(const CanRxMsg * RxMessage);
 
 #endif

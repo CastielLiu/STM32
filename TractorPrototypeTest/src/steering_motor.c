@@ -89,11 +89,43 @@ void setSteeringRotate(float cycleNum)
 	sendControlCmd(g_setRotate_13bytesCmd,13); 
 }
 
-
+#if GET_AD_MODE==GET_AD_MODE0
 uint16_t getAdcValue(void)  
 {
 	uint8_t i=0;
 	uint8_t buf[7];
+	uint8_t temp;
+	uint16_t CRC_checkNum;
+	sendControlCmd(g_getAdValue_8bytesCmd,8);
+	while(((USART2->SR>>4)&0x01)!=1); //空闲标志未置位
+	temp = USART2->SR;
+	temp = USART2->DR;//清除空闲标志
+	while(1)
+	{
+		if((USART2->SR >>5)&0x01) //读数据寄存器非空
+		{
+			buf[i] = (USART2->DR) &0xff;
+			i++;
+			if(i == 7) //读取完毕
+				break;
+		}		
+	}
+	CRC_checkNum = generateModBusCRC_byTable(buf,5);
+	//printf("i = %d\t%x\t%x\t%x\t%x\t%x\t%x\t%x\r\n",i,buf[0],buf[1],buf[2],buf[3],buf[4],buf[5],buf[6]);
+	if((CRC_checkNum&0xff) == buf[5] && (CRC_checkNum>>8) == buf[6])
+		return buf[3]*256 + buf[4];
+	else
+	{
+		printf("读取AD值失败\r\n");
+		return 0; //error
+	}
+}
+#elif GET_AD_MODE==GET_AD_MODE1
+uint16_t getAdcValue(void)  
+{
+	uint8_t i=0;
+	uint8_t buf[14] ;//两倍包长
+	uint8_t *headPtr;
 	uint16_t CRC_checkNum;
 	sendControlCmd(g_getAdValue_8bytesCmd,8);
 	while(1)
@@ -101,20 +133,39 @@ uint16_t getAdcValue(void)
 		if((USART2->SR >>5)&0x01) //读数据寄存器非空
 		{
 			buf[i] = (USART2->DR) &0xff;
-			i++;
-			if(i == 7)
+			
+			if(i >= 6 && buf[i-6]==0x01 &&buf[i-5]==0x03 && buf[i-4]==0x02) 
+			{
+				headPtr = &buf[i-6];
 				break;
+			}
+			i++;
+			if(i==14)
+			{
+				//printf("i=%d\t读取AD值失败\r\n",i);
+				return 0; //error
+			}
 		}		
 	}
-	CRC_checkNum = generateModBusCRC_byTable(buf,5);
-	if((CRC_checkNum&0xff) == buf[5] && (CRC_checkNum>>8) == buf[6])
-		return buf[3]*256 + buf[4];
+	//printf("i = %d\t%x\t%x\t%x\t%x\t%x\t%x\t%x\r\n",i,headPtr[0],headPtr[1],headPtr[2],headPtr[3],headPtr[4],headPtr[5],headPtr[6]);
+	CRC_checkNum = generateModBusCRC_byTable(headPtr,5);
+	if((CRC_checkNum&0xff) == headPtr[5] && (CRC_checkNum>>8) == headPtr[6])
+		return headPtr[3]*256 + headPtr[4];
 	else
 	{
-		//printf("读取AD值失败\r\n");
+		printf("读取AD值失败\r\n");
 		return 0; //error
 	}
 }
+
+
+#elif GET_AD_MODE==GET_AD_MODE_DEBUG
+uint16_t getAdcValue(void) 
+{
+	return 2048;
+}
+
+#endif
 
 float getCurrentRoadWheelAngle(void)
 {
@@ -158,6 +209,7 @@ void steeringEnable()
 }
 
 
+//方向盘转一圈前轮改变 角度值
 static const float degreePerCycle = 20.0;
 void steer_control(float angle_diff)
 {
@@ -165,7 +217,6 @@ void steer_control(float angle_diff)
 	setSteeringSpeed(10); //10rpm
 	delay_ms(1);
 	setSteeringRotate(cycleNum);
-	
 }
 
 

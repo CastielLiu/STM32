@@ -4,6 +4,12 @@
 #include <stdio.h>
 #include "usart.h"
 
+#define GET_AD_MODE0 0
+#define GET_AD_MODE1 1
+#define GET_AD_MODE_DEBUG 2
+#define GET_AD_MODE  GET_AD_MODE_DEBUG
+
+
 void steeringEnable(void);
 uint16_t getAdcValue(void);
 float getCurrentRoadWheelAngle(void);
