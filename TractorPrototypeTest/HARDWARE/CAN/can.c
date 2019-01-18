@@ -128,6 +128,8 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
 				pauseDriverless();
 			else if(RxMessage.Data[0] ==STEERING_DEBUG)
 				steeringDebug(&RxMessage);
+			else if(RxMessage.Data[0] ==STEERING_RE_ENABLE)
+				steeringEnable();
 			
 			break;
 		

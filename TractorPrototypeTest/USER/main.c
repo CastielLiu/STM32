@@ -82,7 +82,8 @@ int main(void)
 			if((tempFloat =getCurrentRoadWheelAngle()) <50.0)//角度获取失败时值为180.0 
 			{
 				road_wheel_angle = tempFloat;
-				g_s16_steer_angle = road_wheel_angle*100;
+				g_s16_steer_angle = (s16)(road_wheel_angle*100);
+				//printf("%d\r\n",g_s16_steer_angle);
 			}
 			if(1==g_debugEnable)
 			{

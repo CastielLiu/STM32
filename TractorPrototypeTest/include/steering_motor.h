@@ -7,7 +7,7 @@
 #define GET_AD_MODE0 0
 #define GET_AD_MODE1 1
 #define GET_AD_MODE_DEBUG 2
-#define GET_AD_MODE  GET_AD_MODE_DEBUG
+#define GET_AD_MODE  GET_AD_MODE0
 
 
 void steeringEnable(void);

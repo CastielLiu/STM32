@@ -68,14 +68,17 @@ void TIM5_IRQHandler(void)
 			if(g_s16_steer_angle > 0)
 			{
 				send_buf_0x4C3[0] = 2;//×ó
+				send_buf_0x4C3[1] = (g_s16_steer_angle>>8)&0xff;
+				send_buf_0x4C3[2] = g_s16_steer_angle & 0xff;
 			}
 			else
 			{
 				send_buf_0x4C3[0] = 1;//ÓÒÆ«
-				g_s16_steer_angle = -g_s16_steer_angle;
+				send_buf_0x4C3[1] = (-g_s16_steer_angle>>8)&0xff;
+				send_buf_0x4C3[2] = -g_s16_steer_angle & 0xff;
 			}
 			
-			memcpy(&send_buf_0x4C3[1],&g_s16_steer_angle,2);
+			
 			Can_Send_Msg(0x4C3,send_buf_0x4C3,8);
 		}
 		

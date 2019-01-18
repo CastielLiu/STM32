@@ -172,7 +172,7 @@ float getCurrentRoadWheelAngle(void)
 	uint16_t adValue = getAdcValue();
 	if(adValue==0) return 180.0; //error
 	else
-		return g_roadWheelAngle_dir * (adValue - g_AngleSensorAdValueOffset)*g_AngleSensorMaxAngle/g_AngleSensorMaxAdValue ;
+		return 1.0*g_roadWheelAngle_dir * (adValue - g_AngleSensorAdValueOffset)*g_AngleSensorMaxAngle/g_AngleSensorMaxAdValue ;
 }
 
 
@@ -213,7 +213,7 @@ void steeringEnable()
 static const float degreePerCycle = 20.0;
 void steer_control(float angle_diff)
 {
-	float cycleNum = angle_diff / degreePerCycle;
+	float cycleNum = - angle_diff / degreePerCycle;
 	setSteeringSpeed(10); //10rpm
 	delay_ms(1);
 	setSteeringRotate(cycleNum);

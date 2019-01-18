@@ -31,6 +31,8 @@ void system_init()
 	
 	delay_init();	
 	
+	//delay_ms(5000);
+	
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2); 
 	
 	//CAN_Mode_Init(CAN_SJW_1tq,CAN_BS2_8tq,CAN_BS1_9tq,8,CAN_Mode_Normal); //250kbps
@@ -92,7 +94,7 @@ void system_init()
 	
 	printf("offset=%d\tmaxAngle=%d\tmaxAdValue=%d\tdir=%d\r\n", \
 				g_AngleSensorAdValueOffset,g_AngleSensorMaxAngle,g_AngleSensorMaxAdValue,g_roadWheelAngle_dir);	
-
+	
 	//printf("初始化完成...\r\n");
 }
 
