@@ -112,23 +112,23 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
 	switch(RxMessage.StdId)
 	{
 		case 0x3C0:  
-			if(RxMessage.Data[0] == STEER_VERIFY)
+			if(RxMessage.Data[0] == REQ_STEER_VERIFY)
 				steeringVerify();
 			
-			else if(RxMessage.Data[0] == CLEAR_CONFIG_DATA)
+			else if(RxMessage.Data[0] == REQ_CLEAR_CONFIG_DATA)
 				clearBKP();
-			else if(RxMessage.Data[0] ==ANGLE_SENSOR_VERIFY)
+			else if(RxMessage.Data[0] ==REQ_ANGLE_SENSOR_VERIFY)
 				angleSensorVerify(&RxMessage);
 
-			else if(RxMessage.Data[0]==RECORD_TARGET_POINT)
+			else if(RxMessage.Data[0]==REQ_RECORD_TARGET_POINT)
 				recordTargetPoint();
-			else if(RxMessage.Data[0]==START_DRIVERLESS)
+			else if(RxMessage.Data[0]==REQ_START_DRIVERLESS)
 				startDriverless();
-			else if(RxMessage.Data[0]==PAUSE_DRIVERLESS)
+			else if(RxMessage.Data[0]==REQ_PAUSE_DRIVERLESS)
 				pauseDriverless();
-			else if(RxMessage.Data[0] ==STEERING_DEBUG)
+			else if(RxMessage.Data[0] ==REQ_STEERING_DEBUG)
 				steeringDebug(&RxMessage);
-			else if(RxMessage.Data[0] ==STEERING_RE_ENABLE)
+			else if(RxMessage.Data[0] ==REQ_STEERING_ENABLE)
 				steeringEnable();
 			
 			break;

@@ -28,9 +28,9 @@ u8 gpsParseBeiDou(const u8 *buf)
 	
 	GetComma(buf,commaLocation);
 	strncpy(tempBuf,&buf[commaLocation[2]+1],commaLocation[3]-commaLocation[2]-1);
-	g_gps_status = tempBuf[0];
+	g_u8_gps_status = tempBuf[0];
 	//printf("%s\r\n",buf);
-	if('A' == g_gps_status) 
+	if('A' == g_u8_gps_status) 
 	{
 		strncpy(tempBuf,&buf[commaLocation[3]+1],commaLocation[4]-commaLocation[3]-1);
 		tempLat = atof(tempBuf);
@@ -53,8 +53,8 @@ u8 gpsParseBeiDou(const u8 *buf)
 		
 		g_vehicleSpeed = atof(tempBuf)* 1.85  ; 
 		
-		g_int_lon = tempLon *10000000;
-		g_int_lat = tempLat *10000000;
+		g_u32_lon = tempLon *10000000;
+		g_u32_lat = tempLat *10000000;
 		g_u16_yaw = tempYaw *100;
 		//g_s16_speed = 10;//km/h  ??100?
 		//g_int_height = 9.0 *1000 ;	

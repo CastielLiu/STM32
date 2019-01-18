@@ -5,22 +5,22 @@
 u8 g_gps_data_buf[DMA_DATA_NUM];
 
 
-gps_sphere_t g_gps_sphere_now;
+gps_sphere_t g_gps_sphere_now={0.0,0.0,0.0};
 
 char g_mode_name[20]= "Record Point";
 
-int g_int_lon,g_int_lat,g_int_height;
+int g_u32_lon,g_u32_lat,g_int_height;
 
 s16 g_s16_speed;
 uint16_t g_u16_yaw;
 
-u8 g_gps_status,g_gps_satellites;   //use to can send msg 
+u8 g_u8_gps_status,g_u8_gps_satellites;   //use to can send msg 
 s16  g_s16_steer_angle;   
 
 u8 g_actual_path_vertwx_num=0; //路径顶点个数
 u8 g_recordTargetSeq = 0;//务必初始化为0
 
-u8 g_start_driverless_flag = 0;
+u8 g_drivingMode = DRIVINGMODE_MANUAL;
 
 gps_sphere_t target_point[MAX_PATH_VERTEX_NUM]={0.0,0.0,0.0};  
 

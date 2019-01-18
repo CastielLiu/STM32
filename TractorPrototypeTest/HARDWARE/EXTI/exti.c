@@ -93,7 +93,7 @@ void EXTI3_IRQHandler(void)
 	delay_ms(10);//消抖
 	if(KEY1==0)	 //按键KEY1
 	{
-		if(g_start_driverless_flag==0)
+		if(g_drivingMode !=DRIVINGMODE_DRIVERLESS)
 			startDriverless();
 		else
 			pauseDriverless();
@@ -115,7 +115,20 @@ void EXTI4_IRQHandler(void)
 	}
 	*/
 	delay_ms(10);//消抖
-	
+	if(KEY0 ==0)
+	{
+		static u8 flag=0;
+		if(flag==1)
+		{
+			steeringEnable();
+			flag=0;
+		}	
+		else
+		{
+			steeringDisable();
+			flag=1;
+		}
+	}
 	EXTI_ClearITPendingBit(EXTI_Line4);  //清除LINE4上的中断标志位  
 }
  

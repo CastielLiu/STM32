@@ -35,6 +35,7 @@ typedef struct
 
 u8 gpsParseNuoGeng(const uint8_t *buf);
 
+void showBufData( u8* buf,int len);
 
  
  

@@ -25,8 +25,7 @@
 
 
 void system_init()
-{
- 
+{ 
 	uint16_t _BKP_DRx;
 	
 	delay_init();	
@@ -39,8 +38,6 @@ void system_init()
 	CAN_Mode_Init(CAN_SJW_1tq,CAN_BS2_8tq,CAN_BS1_9tq,4,CAN_Mode_Normal); //500kbps
 	uart1_init(115200);	
 	uart2_init(115200);	//接方向电机
-	 
-	//Adc_Init();
 	
  	LED_Init();
 	BEEP_Init();

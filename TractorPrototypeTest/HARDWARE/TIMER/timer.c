@@ -46,9 +46,20 @@ void TIM5_IRQHandler(void)
 	{
 		if(count%5==0) //50ms
 		{
-			memcpy(send_buf_0x4C0,&g_int_lat,4);
-			memcpy(&send_buf_0x4C0[4],&g_int_lon,4);
+//			g_u32_lat = 311234567;
+//			g_u32_lon = 1181234567;
+			send_buf_0x4C0[0] = (g_u32_lat>>24)&0xff;
+			send_buf_0x4C0[1] = (g_u32_lat>>16)&0xff;
+			send_buf_0x4C0[2] = (g_u32_lat>>8)&0xff;
+			send_buf_0x4C0[3] = (g_u32_lat)&0xff;
+			
+			send_buf_0x4C0[4] = (g_u32_lon>>24)&0xff;
+			send_buf_0x4C0[5] = (g_u32_lon>>16)&0xff;
+			send_buf_0x4C0[6] = (g_u32_lon>>8)&0xff;
+			send_buf_0x4C0[7] = (g_u32_lon)&0xff;
+			
 			Can_Send_Msg(0x4C0,send_buf_0x4C0,8); 
+			//printf("lonLat\r\n");
 		}
 		else if(count%5==1)
 		{
@@ -56,11 +67,17 @@ void TIM5_IRQHandler(void)
 			Can_Send_Msg(0x4C1,send_buf_0x4C1,8);
 		}
 		else if(count%5==2)
-		{
-			memcpy(send_buf_0x4C2,&g_s16_speed,2);
-			memcpy(&send_buf_0x4C2[2],&g_u16_yaw,2);
-			memcpy(&send_buf_0x4C2[4],&g_gps_status,1);
-			memcpy(&send_buf_0x4C2[5],&g_gps_satellites,1);
+		{		
+			g_u16_yaw = 1234;
+			
+			send_buf_0x4C2[0] = (g_s16_speed>>8)&0xff;
+			send_buf_0x4C2[1] = g_s16_speed &0xff;
+			
+			send_buf_0x4C2[2] = (g_u16_yaw>>8)&0xff;
+			send_buf_0x4C2[3] = g_u16_yaw &0xff;
+			
+			send_buf_0x4C2[4] = g_u8_gps_status ;
+			send_buf_0x4C2[5] = g_u8_gps_satellites ;
 			Can_Send_Msg(0x4C2,send_buf_0x4C2,8);
 		}
 		else if(count%5==3)
@@ -83,13 +100,13 @@ void TIM5_IRQHandler(void)
 		}
 		
 //			printf("g_s16_steer_angle=%d\r\n",g_s16_steer_angle);
-//			printf("g_int_lon=%d\r\n",g_int_lon);
-//			printf("g_int_lat=%d\r\n",g_int_lat);
+//			printf("g_u32_lon=%d\r\n",g_u32_lon);
+//			printf("g_u32_lat=%d\r\n",g_u32_lat);
 //			printf("g_int_height=%d\r\n",g_int_height);
 //			printf("g_s16_speed=%d\r\n",g_s16_speed);
 //			printf("g_u16_yaw=%d\r\n",g_u16_yaw);
-//			printf("g_gps_status=%d\r\n",g_gps_status);
-//			printf("g_gps_satellites=%d\r\n\r\n",g_gps_satellites);
+//			printf("g_u8_gps_status=%d\r\n",g_u8_gps_status);
+//			printf("g_u8_gps_satellites=%d\r\n\r\n",g_u8_gps_satellites);
 	}
 	count ++;
     TIM_ClearITPendingBit(TIM5, TIM_IT_Update); //清除中断标志位

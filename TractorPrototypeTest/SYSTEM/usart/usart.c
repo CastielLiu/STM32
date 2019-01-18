@@ -231,6 +231,7 @@ void USART3_IRQHandler(void)
 #endif
 		
 		//printf("status=%d\r\n",parseStatus);
+		//showBufData(g_gps_data_buf,130);
 	}
 }
 #endif	

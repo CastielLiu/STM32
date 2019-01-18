@@ -75,7 +75,8 @@ int main(void)
 	
 	while(1)//25ms
 	{
-		if(g_start_driverless_flag ==0) 
+		
+		if(g_drivingMode == DRIVINGMODE_MANUAL) 
 		{
 			strcpy(g_mode_name,"Record Point");
 			//debug...
@@ -127,7 +128,7 @@ int main(void)
 			if(point2point_dis(g_gps_sphere_now,gps_sphere_target)<Dis_Threshold )
 			{
 				segment_seq++;//ÇÐ»»Ä¿±êµã
-				continue;
+				//continue;
 			}
 			
 			

@@ -97,7 +97,8 @@ uint16_t getAdcValue(void)
 	uint8_t temp;
 	uint16_t CRC_checkNum;
 	sendControlCmd(g_getAdValue_8bytesCmd,8);
-	while(((USART2->SR>>4)&0x01)!=1); //空闲标志未置位
+	while(((USART2->SR>>4)&0x01)!=1)
+		;//printf("not ideal\r\n"); //空闲标志未置位
 	temp = USART2->SR;
 	temp = USART2->DR;//清除空闲标志
 	while(1)
@@ -105,6 +106,7 @@ uint16_t getAdcValue(void)
 		if((USART2->SR >>5)&0x01) //读数据寄存器非空
 		{
 			buf[i] = (USART2->DR) &0xff;
+			//printf("%x\t",buf[i]);
 			i++;
 			if(i == 7) //读取完毕
 				break;
@@ -120,11 +122,13 @@ uint16_t getAdcValue(void)
 		return 0; //error
 	}
 }
+
 #elif GET_AD_MODE==GET_AD_MODE1
 uint16_t getAdcValue(void)  
 {
 	uint8_t i=0;
-	uint8_t buf[14] ;//两倍包长
+	const int bufLen = 14;//两倍包长
+	uint8_t buf[bufLen] ;
 	uint8_t *headPtr;
 	uint16_t CRC_checkNum;
 	sendControlCmd(g_getAdValue_8bytesCmd,8);
@@ -140,24 +144,118 @@ uint16_t getAdcValue(void)
 				break;
 			}
 			i++;
-			if(i==14)
+			if(i==bufLen)
 			{
-				//printf("i=%d\t读取AD值失败\r\n",i);
+				printf("i=%d\t读取AD值数组溢出失败\r\n",i);
 				return 0; //error
 			}
 		}		
 	}
-	//printf("i = %d\t%x\t%x\t%x\t%x\t%x\t%x\t%x\r\n",i,headPtr[0],headPtr[1],headPtr[2],headPtr[3],headPtr[4],headPtr[5],headPtr[6]);
 	CRC_checkNum = generateModBusCRC_byTable(headPtr,5);
 	if((CRC_checkNum&0xff) == headPtr[5] && (CRC_checkNum>>8) == headPtr[6])
 		return headPtr[3]*256 + headPtr[4];
 	else
 	{
-		printf("读取AD值失败\r\n");
+		printf("读取AD值校验失败\r\n");
+		printf("i = %d\t%x\t%x\t%x\t%x\t%x\t%x\t%x\r\n",i,headPtr[0],headPtr[1],headPtr[2],headPtr[3],headPtr[4],headPtr[5],headPtr[6]);
 		return 0; //error
 	}
 }
 
+#elif GET_AD_MODE==GET_AD_MODE1_OutTimeVesion
+uint16_t getAdcValue(void)  
+{
+	uint8_t i=0;
+	int timeOut = 10000;
+	const int bufLen = 14;//两倍包长
+	uint8_t buf[bufLen] ;
+	uint8_t *headPtr;
+	uint16_t CRC_checkNum;
+	sendControlCmd(g_getAdValue_8bytesCmd,8);
+	while(--timeOut)
+	{
+		if((USART2->SR >>5)&0x01) //读数据寄存器非空
+		{
+			buf[i] = (USART2->DR) &0xff;
+			
+			if(i >= 6 && buf[i-6]==0x01 &&buf[i-5]==0x03 && buf[i-4]==0x02) 
+			{
+				headPtr = &buf[i-6];
+				break;
+			}
+			i++;
+			if(i==bufLen)
+			{
+				printf("i=%d\t读取AD值数组溢出失败\r\n",i);
+				return 0; //error
+			}
+		}
+		delay_us(50);
+	}
+	if(timeOut == 0) 
+	{
+		printf("AD get timeout! i = %d\r\n",i);
+		return 0;
+	}
+	CRC_checkNum = generateModBusCRC_byTable(headPtr,5);
+	if((CRC_checkNum&0xff) == headPtr[5] && (CRC_checkNum>>8) == headPtr[6])
+		return headPtr[3]*256 + headPtr[4];
+	else
+	{
+		printf("读取AD值校验失败\r\n");
+		printf("i = %d\t%x\t%x\t%x\t%x\t%x\t%x\t%x\r\n",i,headPtr[0],headPtr[1],headPtr[2],headPtr[3],headPtr[4],headPtr[5],headPtr[6]);
+		return 0; //error
+	}
+}
+
+#elif GET_AD_MODE==GET_AD_MODE3
+uint16_t getAdcValue(void)
+{
+	uint8_t i=0;
+	const int bufLen = 14;//两倍包长
+	uint8_t buf[bufLen] ;
+	uint8_t *headPtr;
+	
+	uint8_t temp;
+	uint16_t CRC_checkNum;
+	int timeOut = 10000;  //600ms 超时  太长！
+	sendControlCmd(g_getAdValue_8bytesCmd,8);
+	
+	while(--timeOut)
+	{
+		if((USART2->SR >>5)&0x01) //读数据寄存器非空
+		{
+			buf[i] = (USART2->DR) &0xff;
+			i++;
+		}
+		else if(((USART2->SR>>4)&0x01)==1)//总线空闲
+		{
+			temp = USART2->SR;  temp = USART2->DR;
+			if(i>=7)
+			{
+				headPtr = &buf[i-7];
+				break;
+			}
+		}
+		delay_us(50); //115200,69us/byte,延时时间应小于69us 防止漏掉字节！
+	}
+	if(timeOut==0)
+	{
+		u8 canSendTimeOut = 0xff;
+		Can_Send_Msg(0x3C0,&canSendTimeOut,1);
+		printf("AD get timeout! i = %d\r\n",i);
+		return 0;
+	}
+	CRC_checkNum = generateModBusCRC_byTable(headPtr,5);
+	if((CRC_checkNum&0xff) == headPtr[5] && (CRC_checkNum>>8) == headPtr[6])
+		return headPtr[3]*256 + headPtr[4];
+	else
+	{
+		printf("AD校验失败\r\n");
+		printf("i = %d\t%x\t%x\t%x\t%x\t%x\t%x\t%x\r\n",i,buf[0],buf[1],buf[2],buf[3],buf[4],buf[5],buf[6]);
+		return 0; //error
+	}
+}
 
 #elif GET_AD_MODE==GET_AD_MODE_DEBUG
 uint16_t getAdcValue(void) 
@@ -206,6 +304,12 @@ void steeringEnable()
 	uint8_t enable_11bytesCmd[11]={0x01,0x10,0x00,0x33,0x00,0x01,0x02,0x00,0x01,0x62,0x53};//byte1 0x10 ??????  
 																				//bytes 5 0x01 enable  0x00 disable
 	sendControlCmd(enable_11bytesCmd,11);
+}
+
+void steeringDisable()
+{
+	uint8_t disable_11bytesCmd[11]={0x01,0x10,0x00,0x33,0x00,0x01,0x02,0x00,0x00,0xA3,0x93};
+	sendControlCmd(disable_11bytesCmd,11);
 }
 
 
