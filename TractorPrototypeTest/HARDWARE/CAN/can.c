@@ -130,6 +130,8 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
 				steeringDebug(&RxMessage);
 			else if(RxMessage.Data[0] ==REQ_STEERING_ENABLE)
 				steeringEnable();
+			else if(RxMessage.Data[0] ==REQ_STEERING_DISABLE)
+				steeringDisable();
 			
 			break;
 		

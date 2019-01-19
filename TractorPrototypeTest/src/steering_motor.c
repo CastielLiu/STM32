@@ -319,7 +319,8 @@ void steeringDisable()
 static const float degreePerCycle = 20.0;
 void steer_control(float angle_diff)
 {
-	float cycleNum = - angle_diff / degreePerCycle;
+	float cycleNum;
+cycleNum	= - angle_diff / degreePerCycle;
 	setSteeringSpeed(20); //10rpm
 	delay_ms(1);
 	setSteeringRotate(cycleNum);

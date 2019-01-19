@@ -23,12 +23,15 @@ u8 gpsParseNuoGeng(const u8 *gps_data_buf)
 	
 	if(i>=DMA_DATA_NUM-105) return 1;
 	
+	if(g_gps_sphere_now.yaw <=2*pi && g_gps_sphere_now.yaw >=0)
 		g_gps_sphere_now.yaw = *(float  *)gpsPtr->yaw;
 		
 		memcpy(convert.in,gpsPtr->lon,8);
+	if(convert.out < pi && convert.out >0.0)
 		g_gps_sphere_now.lon = convert.out;
-		
-		memcpy(convert.in,gpsPtr->lat,8);
+	
+	memcpy(convert.in,gpsPtr->lat,8);
+	if(convert.out <pi/2 && convert.out >0.0)	
 		g_gps_sphere_now.lat = convert.out;
 		
 		g_vehicleSpeed = sqrt(pow(*(float *)gpsPtr->vel_e,2)+pow(*(float *)gpsPtr->vel_n,2));
