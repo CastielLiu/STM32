@@ -64,7 +64,7 @@ void recordTargetPoint()
 		LCD_ShowString(LCD_LU_X+25*LCD_FOND_SIZE/2,LCD_LU_Y + LCD_FOND_SIZE*1+(g_recordTargetSeq)*LCD_FOND_SIZE*2,11*LCD_FOND_SIZE/2,LCD_FOND_SIZE,LCD_FOND_SIZE,"data error!");
 		return;
 	}
-	if(g_drivingMode != DRIVINGMODE_MANUAL)	 	 //未处于无人驾驶状态，防止无人驾驶时误触按键导致目标点重新记录
+	if(g_drivingMode == DRIVINGMODE_MANUAL)	 	 //未处于无人驾驶状态，防止无人驾驶时误触按键导致目标点重新记录
 	{	
 		//两次记录目标点小于record_dis_threshold  m时相当于上一个点重新记录 	
 		if(dis > g_MinDisBetweenTwoTarget )//第一个目标点理应记录到0位置  

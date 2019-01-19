@@ -56,7 +56,7 @@ void system_init()
 	
 	LCD_Init();
 	
-	steeringEnable();
+	//steeringEnable();
 	
 	/*使用后备区域存储数据  存入BKP->DR*  */
 	RCC->APB1ENR|=1<<28;//使能电源时钟

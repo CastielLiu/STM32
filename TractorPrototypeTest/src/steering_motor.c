@@ -149,7 +149,9 @@ uint16_t getAdcValue(void)
 				printf("i=%d\t读取AD值数组溢出失败\r\n",i);
 				return 0; //error
 			}
-		}		
+		}	
+			//printf("i= %d\r\n",i);
+		//如果一直收不到数据，将会死循环
 	}
 	CRC_checkNum = generateModBusCRC_byTable(headPtr,5);
 	if((CRC_checkNum&0xff) == headPtr[5] && (CRC_checkNum>>8) == headPtr[6])
@@ -166,7 +168,7 @@ uint16_t getAdcValue(void)
 uint16_t getAdcValue(void)  
 {
 	uint8_t i=0;
-	int timeOut = 10000;
+	int timeOut = 5000;
 	const int bufLen = 14;//两倍包长
 	uint8_t buf[bufLen] ;
 	uint8_t *headPtr;
@@ -218,7 +220,7 @@ uint16_t getAdcValue(void)
 	
 	uint8_t temp;
 	uint16_t CRC_checkNum;
-	int timeOut = 10000;  //600ms 超时  太长！
+	int timeOut = 5000;  //250ms 超时 
 	sendControlCmd(g_getAdValue_8bytesCmd,8);
 	
 	while(--timeOut)

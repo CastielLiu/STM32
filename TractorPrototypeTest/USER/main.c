@@ -18,7 +18,7 @@
 //前轮转角与转弯半径的关系
 //radius = AXIS_DIS/sin(θ) -> θ = asin(AXIS_DIS/radius)
 #define WHEEL_DIS 0.5
-#define AXIS_DIS  0.7
+#define AXIS_DIS  2.0     //0.7
 #define Dis_Threshold 3   //距离当前目标点小于Dis_Threshold时，切换到下一个目标点
 #define DIS_STEP 0.2  //20cm per point
  

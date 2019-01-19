@@ -41,10 +41,11 @@ void TIM5_IRQHandler(void)
 	u8 send_buf_0x4C2[8] = {0};
 	u8 send_buf_0x4C3[8] = {0};
 	static uint32_t count=0;
+	u8 div = 5;
 	
 	if(TIM_GetITStatus(TIM5,TIM_IT_Update) != RESET) //¸üÐÂÖÐ¶Ï
 	{
-		if(count%5==0) //50ms
+		if(count%div==0)
 		{
 //			g_u32_lat = 311234567;
 //			g_u32_lon = 1181234567;
@@ -61,14 +62,14 @@ void TIM5_IRQHandler(void)
 			Can_Send_Msg(0x4C0,send_buf_0x4C0,8); 
 			//printf("lonLat\r\n");
 		}
-		else if(count%5==1)
+		else if(count%div==1)
 		{
 			memcpy(send_buf_0x4C1,&g_int_height,4);
 			Can_Send_Msg(0x4C1,send_buf_0x4C1,8);
 		}
-		else if(count%5==2)
+		else if(count%div==2)
 		{		
-			g_u16_yaw = 1234;
+			//g_u16_yaw = 1234;
 			
 			send_buf_0x4C2[0] = (g_s16_speed>>8)&0xff;
 			send_buf_0x4C2[1] = g_s16_speed &0xff;
@@ -80,7 +81,7 @@ void TIM5_IRQHandler(void)
 			send_buf_0x4C2[5] = g_u8_gps_satellites ;
 			Can_Send_Msg(0x4C2,send_buf_0x4C2,8);
 		}
-		else if(count%5==3)
+		else if(count%div==3)
 		{
 			if(g_s16_steer_angle > 0)
 			{

@@ -14,8 +14,10 @@
 
 #define GET_AD_MODE_DEBUG 5 //输出定值  
 
-#define GET_AD_MODE  GET_AD_MODE_DEBUG
+#define GET_AD_MODE  GET_AD_MODE3
 
+
+//2019.1.19 9:13  GET_AD_MODE3与GET_AD_MODE1_OutTimeVesion实现功能
 
 void steeringEnable(void);
 void steeringDisable();
