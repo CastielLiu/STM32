@@ -46,7 +46,7 @@ uint8_t readDataFromBuf(uint8_t *dst,int count)
 	
 	if(count <= usartBufEndPtr - headPtr) //如果所需读取的字节均在头指针的后面，直接读取即可 
 	{									//否则应先把头指针后面的数据读出，再读取位于头指针之前的数据 
-		memcpy(dst,headPtr,count);
+		memcpy(dst,headPtr,count);//此时如果发生串口中断  将导致一字节丢失 
 		headPtr += count;
 	}
 	else
