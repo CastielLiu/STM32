@@ -9,6 +9,17 @@
 extern u8 RxBuffer[RxBufferSize];
 extern u8 UART_RX_NUM;
 
+u8 generate_check_sum(u8 *buf,int len)
+{
+  u8 sum=0;
+  int i=0;
+  for(;i<len;i++)
+  {
+    sum += *(buf+i);
+  }
+  return sum;
+}
+
 //PB5数据线
 //PB4时钟线
 //PB3命令线
@@ -19,9 +30,8 @@ extern u8 UART_RX_NUM;
 int main(void)
 {
   /* Infinite loop */
-  u8 i=0;
   u16 Handkey;
-  u8 sendBuf[6]={0x12,0x34,0x56};
+  u8 sendBuf[12] = {0x66,0xCC};
   /*设置内部高速时钟16M为主时钟*/ 
   Clk_conf();
   uart_conf();
@@ -31,17 +41,20 @@ int main(void)
   PS2_Init();//遥控器
   EnableInterrupt;
   
-
+  int i=0;
   
   while(1)
   {
     if( !PS2_RedLight()) 
 	{
-        delay_ms(75);
+        delay_ms(30);
         PS2_RequestData();
-        sendBuf[3] = Data[8];
-        sendBuf[4] = Data[5];
-        //UART2_SendString(sendBuf,5);
+        for(i=0;i<9;i++)
+          sendBuf[2+i] = Data[i];
+        sendBuf[11] = generate_check_sum(sendBuf,11);
+        
+        UART2_SendString(sendBuf,12);
+      /*  
         Handkey=(Data[4]<<8)|Data[3];
         if((Handkey&(1<<(MASK[PSB_SQUARE-1]-1)))==0)
         { 
@@ -58,7 +71,7 @@ int main(void)
           LED1 = 0;
           LED0 = 0;
         }
-        //printf("\r\n");
+        printf("111\r\n");*/
     }
     else
     {
@@ -89,6 +102,8 @@ void assert_failed(u8* file, u32 line)
   {
   }
 }
+
+
 #endif
 
 /******************* (C) COPYRIGHT 风驰iCreate嵌入式开发工作室 *****END OF FILE****/

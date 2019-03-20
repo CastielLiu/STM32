@@ -16,7 +16,7 @@ u8 		TxData_Buf[32];
 int main(void)
 {	 
 	u16 	ADC_data[8];
-	u8 runMode =1 ;//默认遥控模式
+	u8 runMode =0 ;
 	int16_t temp=0;
 	u8 status = 0;		
 	uint16_t i=0 ,count =0;	    
@@ -44,22 +44,19 @@ int main(void)
 			IR_LED_ON();
 
 	}
+	IR_LED_OFF();
 	delay_ms(10);
 	NRF24L01_TX_Mode();
 	
-	Bzz_ON();
-	delay_ms(100);
-	Bzz_OFF();
-	
-//	printf("初始化完成。。。\r\n");
-	if(runMode)
-		TxData_Buf[31] |=1;
+	//Bzz_ON();
+	//delay_ms(100);
+	//Bzz_OFF();
 		
 	IWDG_Init(72,50000);
 	
 	while (1)
 	{
-			delay_ms(30);
+			delay_ms(10);
 		//	ADC_SoftwareStartConvCmd(ADC1,ENABLE);	 //2018.9.1 commit
 
 			//遥控器电池电压过低3.6V报警
@@ -74,12 +71,12 @@ int main(void)
 			//按键检测，mode切换
 			if(MODE_KEY ==0)
 			{
-				delay_ms(10);//消抖
+				delay_ms(5);//消抖
 				if(MODE_KEY ==0)
 				{
 					runMode = !runMode;
-					TxData_Buf[31] &= 0xfe; //末位清零
-					TxData_Buf[31] |= runMode;
+					TxData_Buf[8] &= 0xfe; //末位清零
+					TxData_Buf[8] |= (runMode&0x01);
 					//printf("runMode = %d\t",runMode);
 				}
 				while(MODE_KEY ==0){IWDG_Feed();	delay_ms(30);} ;//当检测到按键时，主循环时间变长，喂狗时间被滞后，将导致复位
@@ -87,40 +84,44 @@ int main(void)
 			}
 			
 			if(runMode ==1 )
-			{
-				//0-1 左轮速，2-3 右轮速  4-5 转向（右手）
-				temp = leftHand_U_D + (rotarySwitch_1 -2048)/4;   //调节范围-512 ~ 512
-				if(temp > 4096) temp = 4096;
-				else if(temp < 0) temp =0;
-				TxData_Buf[0]=temp >> 8;
-				TxData_Buf[1]=temp & 0xFF;
+				IR_LED_ON();
+			else
+				IR_LED_OFF();
 				
-				temp = (4096-rightHand_U_D) + (rotarySwitch_3 -2048)/4;   //调节范围-512 ~ 512
-				if(temp > 4096) temp = 4096;
-				else if(temp < 0) temp =0;
-				TxData_Buf[2]=temp >> 8;
-				TxData_Buf[3]=temp & 0xFF;
-				
-				temp = (4096 - rightHand_L_R) + (rotarySwitch_2 -2048)/4;   //调节范围-512 ~ 512
-				if(temp > 4096) temp = 4096;
-				else if(temp < 0) temp =0;
-				TxData_Buf[4]=temp >> 8;
-				TxData_Buf[5]=temp & 0xFF;
-				
-				NRF24L01_TxPacket(TxData_Buf);  //send
-				
-				count ++;
-				if(count%10 ==0 )
-					LED1 = !LED1;
-			}
+			//0-1 左轮速，2-3 右轮速  4-5 转向（右手）
+			temp = leftHand_U_D + (rotarySwitch_1 -2048)/4;   //调节范围-512 ~ 512
+			if(temp > 4096) temp = 4096;
+			else if(temp < 0) temp =0;
+			TxData_Buf[0]=temp >> 8;
+			TxData_Buf[1]=temp & 0xFF;
+			
+			temp = (4096-rightHand_U_D) + (rotarySwitch_3 -2048)/4;   //调节范围-512 ~ 512
+			if(temp > 4096) temp = 4096;
+			else if(temp < 0) temp =0;
+			TxData_Buf[2]=temp >> 8;
+			TxData_Buf[3]=temp & 0xFF;
+			
+			temp = (4096 - rightHand_L_R) + (rotarySwitch_2 -2048)/4;   //调节范围-512 ~ 512
+			if(temp > 4096) temp = 4096;
+			else if(temp < 0) temp =0;
+			TxData_Buf[4]=temp >> 8;
+			TxData_Buf[5]=temp & 0xFF;
+			
+			temp = (4096 - leftHand_L_R);
+			if(temp > 4096) temp = 4096;
+			else if(temp < 0) temp =0;
+			TxData_Buf[6]=temp >> 8;
+			TxData_Buf[7]=temp & 0xFF;
+			
+			
+			NRF24L01_TxPacket(TxData_Buf);  //send
+			
+	//		count ++;
+	//		if(count%10 ==0 )
+	//			LED1 = !LED1;
+		
 			IWDG_Feed();//喂狗		
 
-//			for(i=0;i<8;i++)
-//				printf("%d  ",ADC_data[i]);
-//			printf("count=%d\r\n",count);
-			
-		
-			//printf("%x\r\n",TxData_Buf[31]);
 		}
 
 	return 0;
