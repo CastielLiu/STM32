@@ -12,12 +12,13 @@
 #define YK_MODE  1
 
 u8 		TxData_Buf[32];
-
+uint8_t is_bar_medium(uint16_t temp);
 int main(void)
 {	 
 	u16 	ADC_data[8];
 	u8 runMode =0 ;
-	int16_t temp=0;
+	u8 readyToSetMode = 0;
+	int16_t temp1=0 ,temp2=0,temp3=0,temp4=0;
 	u8 status = 0;		
 	uint16_t i=0 ,count =0;	    
 	delay_init();	    	 //延时函数初始化	  
@@ -75,8 +76,7 @@ int main(void)
 				if(MODE_KEY ==0)
 				{
 					runMode = !runMode;
-					TxData_Buf[8] &= 0xfe; //末位清零
-					TxData_Buf[8] |= (runMode&0x01);
+					
 					//printf("runMode = %d\t",runMode);
 				}
 				while(MODE_KEY ==0){IWDG_Feed();	delay_ms(30);} ;//当检测到按键时，主循环时间变长，喂狗时间被滞后，将导致复位
@@ -89,29 +89,40 @@ int main(void)
 				IR_LED_OFF();
 				
 			//0-1 左轮速，2-3 右轮速  4-5 转向（右手）
-			temp = leftHand_U_D + (rotarySwitch_1 -2048)/4;   //调节范围-512 ~ 512
-			if(temp > 4096) temp = 4096;
-			else if(temp < 0) temp =0;
-			TxData_Buf[0]=temp >> 8;
-			TxData_Buf[1]=temp & 0xFF;
+			temp1 = leftHand_U_D + (rotarySwitch_1 -2048)/4;   //调节范围-512 ~ 512
+			if(temp1 > 4096) temp1 = 4096;
+			else if(temp1 < 0) temp1 =0;
+			TxData_Buf[0]=temp1 >> 8;
+			TxData_Buf[1]=temp1 & 0xFF;
 			
-			temp = (4096-rightHand_U_D) + (rotarySwitch_3 -2048)/4;   //调节范围-512 ~ 512
-			if(temp > 4096) temp = 4096;
-			else if(temp < 0) temp =0;
-			TxData_Buf[2]=temp >> 8;
-			TxData_Buf[3]=temp & 0xFF;
+			temp2 = (4096-rightHand_U_D) + (rotarySwitch_3 -2048)/4;   //调节范围-512 ~ 512
+			if(temp2 > 4096) temp2 = 4096;
+			else if(temp2 < 0) temp2 =0;
+			TxData_Buf[2]=temp2 >> 8;
+			TxData_Buf[3]=temp2 & 0xFF;
 			
-			temp = (4096 - rightHand_L_R) + (rotarySwitch_2 -2048)/4;   //调节范围-512 ~ 512
-			if(temp > 4096) temp = 4096;
-			else if(temp < 0) temp =0;
-			TxData_Buf[4]=temp >> 8;
-			TxData_Buf[5]=temp & 0xFF;
+			temp3 = (4096 - rightHand_L_R) + (rotarySwitch_2 -2048)/4;   //调节范围-512 ~ 512
+			if(temp3 > 4096) temp3 = 4096;
+			else if(temp3 < 0) temp3 =0;
+			TxData_Buf[4]=temp3 >> 8;
+			TxData_Buf[5]=temp3 & 0xFF;
 			
-			temp = (4096 - leftHand_L_R);
-			if(temp > 4096) temp = 4096;
-			else if(temp < 0) temp =0;
-			TxData_Buf[6]=temp >> 8;
-			TxData_Buf[7]=temp & 0xFF;
+			temp4 = (4096 - leftHand_L_R);
+			if(temp4 > 4096) temp4 = 4096;
+			else if(temp4 < 0) temp4 =0;
+			TxData_Buf[6]=temp4 >> 8;
+			TxData_Buf[7]=temp4 & 0xFF;
+			
+			if(temp1<1000&&temp2<1000&&temp3<1000&&temp4<1000)
+				readyToSetMode =1;
+			if(readyToSetMode && is_bar_medium(temp1) &&is_bar_medium(temp2) &&is_bar_medium(temp3) &&is_bar_medium(temp4))
+			{
+				runMode =1;
+				readyToSetMode =0;
+			}
+			
+			TxData_Buf[8] &= 0xfe; //末位清零
+			TxData_Buf[8] |= (runMode&0x01);
 			
 			
 			NRF24L01_TxPacket(TxData_Buf);  //send
@@ -128,5 +139,11 @@ int main(void)
 		
 }
  
+uint8_t is_bar_medium(uint16_t temp)
+{
+	if(temp<2048+100 && temp>2048-100)
+		return 1;
+	return 0;
+}
 
 

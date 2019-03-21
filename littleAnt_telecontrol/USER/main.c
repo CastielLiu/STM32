@@ -30,7 +30,9 @@ int main(void)
 	u8 wirelessBuf[32];	 //遥控器数据接收缓存	
 	u8 sendBuf[BUF_LEN]={0x66,0xcc};
 	int i=0;
+	int count=0;
 	
+	system_init();
 	NRF24L01_Init();    		//初始化NRF24L01 
 	while(NRF24L01_Check())
 	{
@@ -46,10 +48,13 @@ int main(void)
 		{
 			for(i=0;i<BUF_LEN-3;i++)
 				sendBuf[2+i] = wirelessBuf[i];
-			sendBuf[BUF_LEN-1] = generate_check_sum(sendBuf,8);
+			sendBuf[BUF_LEN-1] = generate_check_sum(sendBuf,BUF_LEN-1);
 			write(USART1,sendBuf,BUF_LEN);
 		}
 		delay_ms(10);
+		count++;
+		if(count%30==0)
+			LED1 = !LED1;
 		
 	}	 
  }
