@@ -9,14 +9,13 @@
 #include "fun.h"
 #include "wdg.h"
 
-#define YK_MODE  1
 
 u8 		TxData_Buf[32];
 uint8_t is_bar_medium(uint16_t temp);
 int main(void)
 {	 
 	u16 	ADC_data[8];
-	u8 runMode =0 ;
+	u8 runMode =1 ;
 	u8 readyToSetMode = 0;
 	int16_t temp1=0 ,temp2=0,temp3=0,temp4=0;
 	u8 status = 0;		
@@ -127,9 +126,9 @@ int main(void)
 			
 			NRF24L01_TxPacket(TxData_Buf);  //send
 			
-	//		count ++;
-	//		if(count%10 ==0 )
-	//			LED1 = !LED1;
+			count ++;
+			if(count%20 ==0 )
+				LED1 = !LED1;
 		
 			IWDG_Feed();//Î¹¹·		
 

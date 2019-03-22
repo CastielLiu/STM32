@@ -27,7 +27,6 @@ static gps_sphere_t  gps_sphere_start  , gps_sphere_target, gps_sphere_end;
 
 int main(void)
 {	
-	
  	u16 Adc_value = 0 ;
 	float road_wheel_angle=0.0;
 	float expect_angle =0.0 , angle_differ = 0.0;
