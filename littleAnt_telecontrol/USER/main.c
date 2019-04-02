@@ -48,6 +48,7 @@ int main(void)
 		{
 			for(i=0;i<BUF_LEN-3;i++)
 				sendBuf[2+i] = wirelessBuf[i];
+			
 			sendBuf[BUF_LEN-1] = generate_check_sum(sendBuf,BUF_LEN-1);
 			write(USART1,sendBuf,BUF_LEN);
 		}
