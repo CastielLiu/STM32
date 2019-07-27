@@ -47,7 +47,7 @@ int main(void)
   {
     if( !PS2_RedLight()) 
 	{
-        delay_ms(30);
+        delay_ms(50);
         PS2_RequestData();
         for(i=0;i<9;i++)
           sendBuf[2+i] = Data[i];
